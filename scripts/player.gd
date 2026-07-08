@@ -40,7 +40,7 @@ var last_move_direction: Vector2 = Vector2.DOWN
 @export var dash_amount: int = 3
 @export var dash_speed: float = 600.0
 @export var dash_duration: float = 0.15
-@export var dash_charge_cooldown: float = 1.0
+@export var dash_charge_cooldown: float = 3.0
 @onready var dash_tracker = $canvas_layer/dash_shard/dash_tracker
 #endregion
 
@@ -51,7 +51,7 @@ func _ready():
 	if health_recover_upgrade:
 		health_timer.start()
 	dash_charges = dash_amount
-	dash_tracker.text = str(dash_charges) + "/" + str(dash_amount)
+	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
 	dash_timer.wait_time = dash_charge_cooldown
 	dash_timer.one_shot = true
 
@@ -65,6 +65,7 @@ func _physics_process(delta: float) -> void:
 		dash_time_left -= delta
 		if dash_time_left <= 0.0:
 			is_dashing = false
+			invincibility = false
 			velocity = velocity.limit_length(max_speed)
 		move_and_slide()
 		return
@@ -101,13 +102,13 @@ func get_snap_axis(negative_action: String, positive_action: String, negative_ti
 func dash():
 	if is_dashing or dash_charges <= 0:
 		return
-	invincibility = true
 	is_dashing = true
+	invincibility = true
 	dash_time_left = dash_duration
 	dash_direction = last_move_direction.normalized()
 	velocity = dash_direction * dash_speed
 	dash_charges -= 1
-	dash_tracker.text = str(dash_charges) + "/" + str(dash_amount)
+	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
 	if dash_timer.is_stopped():
 		dash_timer.start()
 
@@ -126,6 +127,6 @@ func _on_health_timer_timeout() -> void:
 
 func _on_dash_timer_timeout() -> void:
 	dash_charges = min(dash_charges + 1, dash_amount)
-	dash_tracker.text = str(dash_charges) + "/" + str(dash_amount)
+	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
 	if dash_charges < dash_amount:
 		dash_timer.start()
