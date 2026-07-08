@@ -14,6 +14,7 @@ config/name="ChronoAnchor"
 config/version="1.0.0"
 run/main_scene="uid://dj2xqw6gl3p73"
 config/features=PackedStringArray("4.7", "GL Compatibility")
+run/max_fps=60
 config/icon="res://icon.svg"
 
 [display]
@@ -77,8 +78,8 @@ dash={
 [layer_names]
 
 2d_physics/layer_1="World"
-2d_physics/layer_2="Player"
-2d_physics/layer_3="Enemies"
+2d_physics/layer_2="Player_Hitbox"
+2d_physics/layer_3="Enemy_Hitbox"
 2d_physics/layer_4="Player_Hurtbox"
 2d_physics/layer_5="Enemy_Hurtbox"
 2d_physics/layer_6="Player_Projectiles"

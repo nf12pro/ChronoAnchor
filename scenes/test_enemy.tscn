@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://oc4j4b2x48bv"]
+
+[ext_resource type="Script" uid="uid://c5elnkje6twyj" path="res://scripts/test_enemy.gd" id="1_fpxyv"]
+[ext_resource type="Texture2D" uid="uid://cyx23xojcaqrv" path="res://assets/prototype_player_default_animation.png" id="2_8c00y"]
+[ext_resource type="PackedScene" uid="uid://b7weh1oqtsr78" path="res://scenes/health_bar.tscn" id="4_1y3pe"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
+atlas = ExtResource("2_8c00y")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qhqgy"]
+atlas = ExtResource("2_8c00y")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6esg4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g2els")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qhqgy")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hv2ic"]
+size = Vector2(32, 58)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6esg4"]
+radius = 129.18979
+
+[node name="test_enemy" type="CharacterBody2D" unique_id=142865822]
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("1_fpxyv")
+
+[node name="animated_sprite_2d" type="AnimatedSprite2D" parent="." unique_id=2084851377]
+modulate = Color(1, 0.5686275, 0, 1)
+position = Vector2(32, 32)
+sprite_frames = SubResource("SpriteFrames_6esg4")
+autoplay = "default"
+frame_progress = 0.12391861
+
+[node name="collision_shape_2d" type="CollisionShape2D" parent="." unique_id=1128658469]
+position = Vector2(32, 32)
+shape = SubResource("RectangleShape2D_hv2ic")
+
+[node name="health_bar" parent="." unique_id=2078701455 instance=ExtResource("4_1y3pe")]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = -14.0
+offset_right = 62.0
+offset_bottom = -3.0
+grow_vertical = 0
+
+[node name="detection_range" type="Area2D" parent="." unique_id=33275608]
+position = Vector2(32, 32)
+collision_layer = 4
+collision_mask = 10
+
+[node name="detection_hitbox" type="CollisionShape2D" parent="detection_range" unique_id=1594368415]
+shape = SubResource("CircleShape2D_6esg4")
+
+[connection signal="area_entered" from="detection_range" to="." method="_on_detection_range_area_entered"]
+[connection signal="area_exited" from="detection_range" to="." method="_on_detection_range_area_exited"]
