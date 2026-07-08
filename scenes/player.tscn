@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://cyx23xojcaqrv" path="res://assets/prototype_player_default_animation.png" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://4q0crsc2o25v" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="PackedScene" uid="uid://b7weh1oqtsr78" path="res://scenes/health_bar.tscn" id="3_qhqgy"]
+[ext_resource type="Texture2D" uid="uid://bxkwp55wasp7b" path="res://assets/prototype_dash_fragment.png" id="4_dqkch"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
 atlas = ExtResource("1_3vyb7")
@@ -34,8 +35,6 @@ script = ExtResource("1_g2els")
 
 [node name="dash_timer" type="Timer" parent="." unique_id=1841688279]
 
-[node name="dash_shard" type="Sprite2D" parent="dash_timer" unique_id=290740632]
-
 [node name="animated_sprite_2d" type="AnimatedSprite2D" parent="." unique_id=2084851377]
 position = Vector2(32, 32)
 sprite_frames = SubResource("SpriteFrames_6esg4")
@@ -48,12 +47,38 @@ shape = SubResource("RectangleShape2D_hv2ic")
 
 [node name="canvas_layer" type="CanvasLayer" parent="." unique_id=527961938]
 
+[node name="dash_shard" type="Sprite2D" parent="canvas_layer" unique_id=290740632]
+position = Vector2(496, 524)
+scale = Vector2(2, 2)
+texture = ExtResource("4_dqkch")
+
+[node name="dash_tracker" type="RichTextLabel" parent="canvas_layer/dash_shard" unique_id=517359511]
+anchors_preset = -1
+anchor_left = -2.469
+anchor_right = 0.21900001
+anchor_bottom = 0.96900004
+offset_left = -7.9959984
+offset_top = -8.5
+offset_right = -8.004
+offset_bottom = -8.004001
+theme_override_colors/default_color = Color(0.75986844, 0.5605189, 0.16995767, 1)
+theme_override_font_sizes/normal_font_size = 8
+theme_override_font_sizes/bold_font_size = 8
+bbcode_enabled = true
+text = "[b] 3/3"
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 2
+
 [node name="health_bar" parent="canvas_layer" unique_id=2078701455 instance=ExtResource("3_qhqgy")]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -30.0
-offset_bottom = 0.0
+offset_left = 1.0
+offset_top = -31.0
+offset_right = 401.0
+offset_bottom = -1.0
 grow_vertical = 0
 
 [node name="health_timer" type="Timer" parent="." unique_id=899907336]
