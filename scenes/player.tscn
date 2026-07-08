@@ -33,8 +33,6 @@ size = Vector2(32, 58)
 [node name="player" type="CharacterBody2D" unique_id=142865822]
 script = ExtResource("1_g2els")
 
-[node name="dash_timer" type="Timer" parent="." unique_id=1841688279]
-
 [node name="animated_sprite_2d" type="AnimatedSprite2D" parent="." unique_id=2084851377]
 position = Vector2(32, 32)
 sprite_frames = SubResource("SpriteFrames_6esg4")
@@ -47,28 +45,31 @@ shape = SubResource("RectangleShape2D_hv2ic")
 
 [node name="canvas_layer" type="CanvasLayer" parent="." unique_id=527961938]
 
-[node name="dash_shard" type="Sprite2D" parent="canvas_layer" unique_id=290740632]
-position = Vector2(496, 524)
-scale = Vector2(2, 2)
-texture = ExtResource("4_dqkch")
-
-[node name="dash_tracker" type="RichTextLabel" parent="canvas_layer/dash_shard" unique_id=517359511]
+[node name="dash_tracker" type="RichTextLabel" parent="canvas_layer" unique_id=517359511]
 anchors_preset = -1
-anchor_left = -2.469
-anchor_right = 0.21900001
-anchor_bottom = 0.96900004
-offset_left = -7.9959984
-offset_top = -8.5
-offset_right = -8.004
-offset_bottom = -8.004001
+anchor_left = 0.42000002
+anchor_top = 0.94100004
+anchor_right = 0.51000005
+anchor_bottom = 0.998
+offset_left = -0.2000122
+offset_top = -0.14001465
+offset_right = 0.39996338
+offset_bottom = 0.079956055
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/default_color = Color(0.75986844, 0.5605189, 0.16995767, 1)
-theme_override_font_sizes/normal_font_size = 12
-theme_override_font_sizes/bold_font_size = 12
+theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/bold_font_size = 20
 bbcode_enabled = true
 text = "[b] 3/3"
 scroll_active = false
 horizontal_alignment = 1
 vertical_alignment = 2
+
+[node name="dash_shard" type="Sprite2D" parent="canvas_layer" unique_id=290740632]
+position = Vector2(496, 524)
+scale = Vector2(2, 2)
+texture = ExtResource("4_dqkch")
 
 [node name="health_bar" parent="canvas_layer" unique_id=2078701455 instance=ExtResource("3_qhqgy")]
 anchors_preset = 2
@@ -83,5 +84,8 @@ grow_vertical = 0
 [node name="health_timer" type="Timer" parent="." unique_id=899907336]
 wait_time = 0.2
 
-[connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]
+[node name="dash_timer" type="Timer" parent="." unique_id=1841688279]
+wait_time = 3.0
+
 [connection signal="timeout" from="health_timer" to="." method="_on_health_timer_timeout"]
+[connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]

@@ -31,6 +31,8 @@ var down_time: float = 0.0
 
 #region Dash
 @onready var dash_timer = $dash_timer
+@onready var dash_tracker = $canvas_layer/dash_tracker
+
 var dash_charges: int = 3
 var is_dashing: bool = false
 var dash_time_left: float = 0.0
@@ -41,7 +43,6 @@ var last_move_direction: Vector2 = Vector2.DOWN
 @export var dash_speed: float = 600.0
 @export var dash_duration: float = 0.15
 @export var dash_charge_cooldown: float = 3.0
-@onready var dash_tracker = $canvas_layer/dash_shard/dash_tracker
 #endregion
 
 func _ready():
