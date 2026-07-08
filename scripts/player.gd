@@ -1,23 +1,39 @@
 extends CharacterBody2D
 
+#region Movement Variables
 @export var max_speed: float = 200.0
 @export var acceleration: float = 1200.0
 @export var friction: float = 1500.0
-@export var snap_tap: bool = true
+#endregion
 
+#region Health
 @onready var health_bar = $canvas_layer/health_bar
+@onready var health_timer = $health_timer
 @export var max_health: float = 100
-var health: float = 100 : set = set_health
 
+var health: float = 100 : set = set_health
+#endregion
+
+#region Snap Taping
 var left_time: float = 0.0
 var right_time: float = 0.0
 var up_time: float = 0.0
 var down_time: float = 0.0
 
+@export var snap_tap: bool = true
+#endregion
+
+#region Upgrades
+@export var health_recover_upgrade = false
+#endregion
+
+
 func _ready():
 	health = max_health
 	health_bar.init_health(health)
 	health_bar.health_depleted.connect(_on_health_depleted)
+	if health_recover_upgrade:
+		health_timer.start()
 
 func set_health(new_health: float) -> void:
 	health = clamp(new_health, 0, max_health)
@@ -62,8 +78,10 @@ func get_snap_axis(negative_action: String, positive_action: String, negative_ti
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("take_damage_test"):
-		print("INPUT DETECTED")
 		health -= 20
 
 func _on_health_depleted() -> void:
 	print("Player died")
+
+func _on_health_timer_timeout() -> void:
+	health += 1
