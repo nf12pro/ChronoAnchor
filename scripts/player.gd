@@ -1,10 +1,15 @@
 extends CharacterBody2D
 
 #region Settings & Speed Variables
-@export var max_speed: float = 200
-@export var acceleration: float = 1200
-@export var friction: float = 1500
+@export var max_speed: float = 200.0
+@export var acceleration: float = 1200.0
+@export var friction: float = 1500.0
 @export var snap_tap: bool = true
+#endregion
+
+#region Health
+@onready var health_bar = $health_bar
+@export var health = 100
 #endregion
 
 #region Snap Tap Trackers
@@ -13,6 +18,9 @@ var right_time: float = 0.0
 var up_time: float = 0.0
 var down_time: float = 0.0
 #endregion
+
+func _ready():
+	health_bar.init_health(health)
 
 func _physics_process(delta: float) -> void:
 	var current_time = Time.get_ticks_msec()
@@ -49,3 +57,8 @@ func get_snap_axis(negative_action: String, positive_action: String, negative_ti
 	if positive_held: return 1.0
 	if negative_held: return -1.0
 	return 0.0
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("take_damage_test"):
+		print("INPUT DETECTED")
+		health -= 20
