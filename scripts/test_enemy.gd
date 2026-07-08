@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 #region Movement
-@export var max_speed: float = 100.0
+@export var max_speed: float = 25.0
 #endregion
 
 #region Invincibility
@@ -25,19 +25,19 @@ func _ready():
 func _physics_process(_delta: float) -> void:
 	if player:
 		velocity = global_position.direction_to(player.global_position) * max_speed
-		move_and_slide()
+	else:
+		velocity = Vector2.ZERO 
 	invincibility = false
 	velocity = velocity.limit_length(max_speed)
 	move_and_slide()
 
-func _on_detection_range_area_entered(body):
+func _on_detection_range_body_entered(body: Node2D) -> void:
 	if body.name == "player":
 		player = body
 
-func _on_detection_range_area_exited(body):
+func _on_detection_range_body_exited(body: Node2D) -> void:
 	if body.name == "player":
 		player = null
-		velocity = Vector2.ZERO
 
 func set_health(new_health: float) -> void:
 	health = clamp(new_health, 0, max_health)
@@ -46,3 +46,7 @@ func set_health(new_health: float) -> void:
 
 func _on_health_depleted() -> void:
 	self.queue_free()
+	
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("take_damage_test"):
+		health -= 20

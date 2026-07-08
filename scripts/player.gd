@@ -116,7 +116,7 @@ func dash():
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("take_damage_test"):
 		if not invincibility:
-			health -= 20
+			health -= 10
 	if event.is_action_pressed("dash"):
 		dash()
 

@@ -66,5 +66,5 @@ collision_mask = 10
 [node name="detection_hitbox" type="CollisionShape2D" parent="detection_range" unique_id=1594368415]
 shape = SubResource("CircleShape2D_6esg4")
 
-[connection signal="area_entered" from="detection_range" to="." method="_on_detection_range_area_entered"]
-[connection signal="area_exited" from="detection_range" to="." method="_on_detection_range_area_exited"]
+[connection signal="body_entered" from="detection_range" to="." method="_on_detection_range_body_entered"]
+[connection signal="body_exited" from="detection_range" to="." method="_on_detection_range_body_exited"]
