@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bbkit7y8fwlse"]
+
+[ext_resource type="Script" uid="uid://du0fjnu8hff8g" path="res://scripts/sword_equipment.gd" id="1_lks1c"]
+
+[node name="sword_equipment" type="Node2D" unique_id=1586162383]
+script = ExtResource("1_lks1c")
+
+[node name="sword_area" type="Area2D" parent="." unique_id=1393820661]
+position = Vector2(501, 243)
+
+[node name="sword_hitbox" type="CollisionPolygon2D" parent="sword_area" unique_id=891468724]
