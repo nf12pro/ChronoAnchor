@@ -1,15 +1,8 @@
 [gd_scene format=3 uid="uid://dj2xqw6gl3p73"]
 
 [ext_resource type="PackedScene" uid="uid://bwiio5rwwi5dp" path="res://scenes/player.tscn" id="1_2j2p2"]
-[ext_resource type="PackedScene" uid="uid://b7weh1oqtsr78" path="res://scenes/health_bar.tscn" id="2_v6rby"]
 
 [node name="testing_scene" type="Node2D" unique_id=1774393185]
 
 [node name="player" parent="." unique_id=142865822 instance=ExtResource("1_2j2p2")]
 position = Vector2(480, 224)
-
-[node name="health_bar" parent="player" unique_id=2078701455 instance=ExtResource("2_v6rby")]
-offset_left = -480.0
-offset_top = -224.0
-offset_right = -80.0
-offset_bottom = -194.0

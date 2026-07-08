@@ -8,7 +8,7 @@ extends CharacterBody2D
 #endregion
 
 #region Health
-@onready var health_bar = $health_bar
+@onready var health_bar = $canvas_layer/health_bar
 @export var health = 100
 #endregion
 
@@ -62,3 +62,4 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("take_damage_test"):
 		print("INPUT DETECTED")
 		health -= 20
+		health_bar.health = health

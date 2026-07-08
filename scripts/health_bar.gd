@@ -3,7 +3,7 @@ extends ProgressBar
 @onready var timer = $timer
 @onready var damage_bar = $damage_bar
 
-var health = 0.0 : set = set_health
+var health = 0 : set = set_health
 
 func set_health(new_health):
 	var previous_health = health
@@ -12,7 +12,7 @@ func set_health(new_health):
 	
 	if health <= 0:
 		queue_free()
-	
+
 	if health < previous_health:
 		timer.start()
 	else:
