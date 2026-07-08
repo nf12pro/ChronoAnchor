@@ -7,5 +7,9 @@ script = ExtResource("1_lks1c")
 
 [node name="sword_area" type="Area2D" parent="." unique_id=1393820661]
 position = Vector2(501, 243)
+collision_layer = 2
+collision_mask = 16
 
 [node name="sword_hitbox" type="CollisionPolygon2D" parent="sword_area" unique_id=891468724]
+
+[connection signal="body_entered" from="sword_area" to="." method="_on_sword_area_body_entered"]
