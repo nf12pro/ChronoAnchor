@@ -43,7 +43,7 @@ value = 80.0
 show_percentage = false
 
 [node name="timer" type="Timer" parent="." unique_id=86794791]
-wait_time = 0.1
+wait_time = 0.4
 one_shot = true
 
 [connection signal="timeout" from="timer" to="." method="_on_timer_timeout"]

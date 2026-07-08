@@ -15,7 +15,7 @@ func init_health(setting_health: float) -> void:
 	max_value = setting_health
 	damage_bar.max_value = setting_health
 
-	health = setting_health   
+	health = setting_health
 	value = health
 	damage_bar.value = health
 
@@ -23,7 +23,7 @@ func init_health(setting_health: float) -> void:
 
 func set_health(new_health: float) -> void:
 	var previous_health = health
-	health = clamp(new_health, 0, max_value)   
+	health = clamp(new_health, 0, max_value)
 
 	if not _initialized:
 		return
@@ -36,8 +36,7 @@ func set_health(new_health: float) -> void:
 		_tween_damage_bar_to(health)
 
 	if health <= 0 and previous_health > 0:
-		pass
-		#Add Death Function
+		health_depleted.emit()
 
 func _tween_value_to(target: float) -> void:
 	if _value_tween:
