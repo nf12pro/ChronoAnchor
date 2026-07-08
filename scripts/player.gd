@@ -24,14 +24,12 @@ func _ready():
 
 func _physics_process(delta: float) -> void:
 	var current_time = Time.get_ticks_msec()
-	
 	if Input.is_action_just_pressed("move_left"):  left_time  = current_time
 	if Input.is_action_just_pressed("move_right"): right_time = current_time
 	if Input.is_action_just_pressed("move_up"):    up_time    = current_time
 	if Input.is_action_just_pressed("move_down"):  down_time  = current_time
 
 	var input_direction := Vector2.ZERO
-	
 	if snap_tap:
 		input_direction.x = get_snap_axis("move_left", "move_right", left_time, right_time)
 		input_direction.y = get_snap_axis("move_up", "move_down", up_time, down_time)
@@ -50,10 +48,8 @@ func _physics_process(delta: float) -> void:
 func get_snap_axis(negative_action: String, positive_action: String, negative_time: float, positive_time: float) -> float:
 	var negative_held = Input.is_action_pressed(negative_action)
 	var positive_held = Input.is_action_pressed(positive_action)
-	
 	if negative_held and positive_held:
 		return 1.0 if positive_time > negative_time else -1.0
-		
 	if positive_held: return 1.0
 	if negative_held: return -1.0
 	return 0.0

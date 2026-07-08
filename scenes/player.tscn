@@ -45,3 +45,9 @@ shape = SubResource("RectangleShape2D_hv2ic")
 [node name="canvas_layer" type="CanvasLayer" parent="." unique_id=527961938]
 
 [node name="health_bar" parent="canvas_layer" unique_id=2078701455 instance=ExtResource("3_qhqgy")]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -30.0
+offset_bottom = 0.0
+grow_vertical = 0
