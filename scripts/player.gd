@@ -27,10 +27,6 @@ var down_time: float = 0.0
 @export var snap_tap: bool = true
 #endregion
 
-#region Upgrades
-@export var health_recover_upgrade = false
-#endregion
-
 #region Dash
 @onready var dash_timer = $dash_timer
 @onready var dash_tracker = $canvas_layer/dash_tracker
@@ -46,6 +42,15 @@ var last_move_direction: Vector2 = Vector2.DOWN
 @export var dash_charge_cooldown: float = 3.0
 
 signal dash_finished
+#endregion
+
+#region Attack
+@onready var sword_equipment = $sword_equipment
+
+#endregion
+
+#region Upgrades
+@export var health_recover_upgrade = false
 #endregion
 
 func _ready():
@@ -77,6 +82,8 @@ func _physics_process(delta: float) -> void:
 			dash_finished.emit()
 			dash_invincible = false
 			velocity = velocity.limit_length(max_speed)
+		if Global.on_windup:
+			return
 		move_and_slide()
 		return
 	

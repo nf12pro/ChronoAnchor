@@ -34,7 +34,6 @@ wait_time = 0.3
 one_shot = true
 
 [node name="windup_timer" type="Timer" parent="." unique_id=349641787]
-process_callback = 0
 one_shot = true
 
 [connection signal="body_entered" from="sword_area" to="." method="_on_sword_area_body_entered"]

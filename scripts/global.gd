@@ -3,6 +3,7 @@ extends Node
 var request_id: int = 0
 var is_dashing: bool = false
 var is_attacking: bool = false
+var on_windup: bool = false
 
 func freeze(duration, scale) -> void:
 	request_id += 1

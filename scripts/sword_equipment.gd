@@ -7,7 +7,6 @@ extends Node2D
 @onready var windup_timer = $windup_timer
 
 var on_cooldown: bool = false
-var on_windup: bool = false
 
 signal basic_windup
 signal heavy_windup
@@ -56,7 +55,7 @@ func generate_semi_circle() -> void:
 	heavy_sword_hitbox.polygon = points
 
 func _process(_delta: float) -> void:
-	if Global.is_attacking or on_windup:
+	if Global.is_attacking or Global.on_windup:
 		return 
 	var mouse_pos = get_global_mouse_position() 
 	global_rotation = (mouse_pos - global_position).angle()
@@ -85,11 +84,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		light_sword_attack = false
 
 func basic_attack() -> void:
-	on_windup = true
+	Global.on_windup = true
+	basic_windup.emit()
 	windup_timer.start(0.1)
 	await windup_timer.timeout
 
-	on_windup = false
+	Global.on_windup = false
 	hit_enemies.clear()
 	Global.is_attacking = true
 	on_cooldown = true
@@ -121,11 +121,13 @@ func light_attack() -> void:
 	call_deferred("_check_initial_overlaps")
 
 func heavy_attack() -> void:
-	on_windup = true
+	Global.on_windup = true
+	heavy_windup.emit()
+	Global.freeze(0.5, 0.90)
 	windup_timer.start(0.5)
 	await windup_timer.timeout
 	
-	on_windup = false
+	Global.on_windup = false
 	hit_enemies.clear()
 	Global.is_attacking = true
 	on_cooldown = true
@@ -184,7 +186,6 @@ func _on_hitbox_timer_timeout() -> void:
 	light_sword_attack = false
 
 	hit_enemies.clear()
-
 	Global.is_attacking = false
 
 func _on_cooldown_timer_timeout() -> void:
