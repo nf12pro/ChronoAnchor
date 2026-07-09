@@ -3,6 +3,10 @@ extends Node2D
 #region Collision Detection
 @onready var sword_area = $sword_area
 @onready var hitbox_timer = $hitbox_timer
+@onready var cooldown_timer = $cooldown_timer
+
+var attacking: bool = false
+var on_cooldown: bool = false
 #endregion
 
 #region Generate Semi Circle
@@ -14,17 +18,27 @@ extends Node2D
 #region Dealing Damage
 var damage = 20
 var hit_enemies: Array = []  
+#endregion
 
 func _ready() -> void:
 	sword_area.monitoring = false
 	hitbox_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
 	sword_area.body_entered.connect(_on_sword_area_body_entered)
 
+func _process(_delta: float) -> void:
+	var mouse_pos = get_global_mouse_position()
+	global_rotation = (mouse_pos - global_position).angle()
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("attack") and hitbox_timer.is_stopped():
 		activate_hitbox()
 
 func activate_hitbox() -> void:
+	if on_cooldown:
+		return
+	attacking = true
+	cooldown_timer.start()
+	on_cooldown = true
 	generate_semi_circle()
 	hit_enemies.clear()
 	sword_area.monitoring = true        
@@ -50,4 +64,8 @@ func _on_sword_area_body_entered(body: Node) -> void:
 
 func _on_hitbox_timer_timeout() -> void:
 	sword_area.monitoring = false
+	attacking = false
 	collision_polygon.polygon = PackedVector2Array()  
+
+func _on_cooldown_timer_timeout() -> void:
+	on_cooldown = false
