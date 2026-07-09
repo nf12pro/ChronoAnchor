@@ -1,15 +1,20 @@
 extends Node2D
 
-#region Collision Detection
+#region Timers and Signals
 @onready var sword_area = $sword_area
 @onready var hitbox_timer = $hitbox_timer
 @onready var cooldown_timer = $cooldown_timer
+@onready var windup_timer = $windup_timer
 
 var on_cooldown: bool = false
+var on_windup: bool = false
+
+signal basic_windup
+signal heavy_windup
 #endregion
 
 #region Hitbox
-@export var radius: float = 100.0
+@export var radius: float = 120.0
 @export var segments: int = 16
 
 @onready var basic_sword_hitbox = $sword_area/basic_sword_hitbox
@@ -51,10 +56,9 @@ func generate_semi_circle() -> void:
 	heavy_sword_hitbox.polygon = points
 
 func _process(_delta: float) -> void:
-	if Global.is_attacking:
-		return
-
-	var mouse_pos = get_global_mouse_position()
+	if Global.is_attacking or on_windup:
+		return 
+	var mouse_pos = get_global_mouse_position() 
 	global_rotation = (mouse_pos - global_position).angle()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -69,9 +73,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		heavy_sword_attack = false
 		light_sword_attack = false
 	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
-		print("Wait for Dash")
 		await player.dash_finished
-		print("Finished Dash")
 		heavy_attack()
 		basic_sword_attack = false
 		heavy_sword_attack = true
@@ -83,8 +85,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		light_sword_attack = false
 
 func basic_attack() -> void:
-	hit_enemies.clear()
+	on_windup = true
+	windup_timer.start(0.1)
+	await windup_timer.timeout
 
+	on_windup = false
+	hit_enemies.clear()
 	Global.is_attacking = true
 	on_cooldown = true
 	cooldown_timer.start(0.4)
@@ -115,8 +121,12 @@ func light_attack() -> void:
 	call_deferred("_check_initial_overlaps")
 
 func heavy_attack() -> void:
+	on_windup = true
+	windup_timer.start(0.5)
+	await windup_timer.timeout
+	
+	on_windup = false
 	hit_enemies.clear()
-
 	Global.is_attacking = true
 	on_cooldown = true
 	cooldown_timer.start(0.6)
