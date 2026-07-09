@@ -44,6 +44,10 @@ func set_health(new_health: float) -> void:
 	if health_bar:
 		health_bar.health = health
 
+func take_damage(damage):
+	health -= damage
+
+
 func _on_health_depleted() -> void:
 	self.queue_free()
 	

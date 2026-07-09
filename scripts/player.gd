@@ -7,7 +7,9 @@ extends CharacterBody2D
 #endregion
 
 #region Invincibility
-var invincibility: bool = false
+@onready var damage_invincible_timer = $damage_invincible_timer
+var dash_invincible: bool = false
+var damage_invincible: bool = false
 #endregion
 
 #region Health
@@ -66,7 +68,7 @@ func _physics_process(delta: float) -> void:
 		dash_time_left -= delta
 		if dash_time_left <= 0.0:
 			is_dashing = false
-			invincibility = false
+			dash_invincible = false
 			velocity = velocity.limit_length(max_speed)
 		move_and_slide()
 		return
@@ -104,7 +106,7 @@ func dash():
 	if is_dashing or dash_charges <= 0:
 		return
 	is_dashing = true
-	invincibility = true
+	dash_invincible = true
 	dash_time_left = dash_duration
 	dash_direction = last_move_direction.normalized()
 	velocity = dash_direction * dash_speed
@@ -115,8 +117,10 @@ func dash():
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("take_damage_test"):
-		if not invincibility:
+		if not dash_invincible or damage_invincible:
 			health -= 10
+			damage_invincible_timer.start()
+			damage_invincible = true
 	if event.is_action_pressed("dash"):
 		dash()
 
@@ -131,3 +135,6 @@ func _on_dash_timer_timeout() -> void:
 	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
 	if dash_charges < dash_amount:
 		dash_timer.start()
+
+func _on_damage_invincible_timer_timeout() -> void:
+	damage_invincible = false

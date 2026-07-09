@@ -88,5 +88,9 @@ wait_time = 0.2
 [node name="dash_timer" type="Timer" parent="." unique_id=1841688279]
 wait_time = 3.0
 
+[node name="damage_invincible_timer" type="Timer" parent="." unique_id=1337293071]
+wait_time = 0.3
+
 [connection signal="timeout" from="health_timer" to="." method="_on_health_timer_timeout"]
 [connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]
+[connection signal="timeout" from="damage_invincible_timer" to="." method="_on_damage_invincible_timer_timeout"]
