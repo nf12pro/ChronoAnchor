@@ -44,6 +44,8 @@ var last_move_direction: Vector2 = Vector2.DOWN
 @export var dash_speed: float = 600.0
 @export var dash_duration: float = 0.15
 @export var dash_charge_cooldown: float = 3.0
+
+signal dash_finished
 #endregion
 
 func _ready():
@@ -72,6 +74,7 @@ func _physics_process(delta: float) -> void:
 		dash_time_left -= delta
 		if dash_time_left <= 0.0:
 			Global.is_dashing = false
+			dash_finished.emit()
 			dash_invincible = false
 			velocity = velocity.limit_length(max_speed)
 		move_and_slide()
@@ -104,7 +107,7 @@ func get_snap_axis(negative_action: String, positive_action: String, negative_ti
 
 func dash() -> void:
 	if Global.is_dashing or dash_charges <= 0:
-		return
+		return 
 	Global.is_dashing = true
 	dash_invincible = true
 	dash_time_left = dash_duration

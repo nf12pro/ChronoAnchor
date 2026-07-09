@@ -19,6 +19,8 @@ var on_cooldown: bool = false
 var basic_sword_attack: bool = false
 var heavy_sword_attack: bool = false
 var light_sword_attack: bool = false
+
+@onready var player = get_parent()
 #endregion
 
 #region Dealing Damage
@@ -61,13 +63,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		basic_sword_attack = false
 		heavy_sword_attack = false
 		light_sword_attack = true
-
 	elif event.is_action_pressed("basic_attack") and hitbox_timer.is_stopped() and not on_cooldown:
 		basic_attack()
 		basic_sword_attack = true
 		heavy_sword_attack = false
 		light_sword_attack = false
-
+	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
+		print("Wait for Dash")
+		await player.dash_finished
+		print("Finished Dash")
+		heavy_attack()
+		basic_sword_attack = false
+		heavy_sword_attack = true
+		light_sword_attack = false
 	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and not on_cooldown:
 		heavy_attack()
 		basic_sword_attack = false
