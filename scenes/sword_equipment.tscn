@@ -17,9 +17,11 @@ collision_mask = 16
 [node name="light_sword_hitbox" type="CollisionShape2D" parent="sword_area" unique_id=970164624]
 position = Vector2(36.5, 0)
 shape = SubResource("RectangleShape2D_6esg4")
+disabled = true
 
-[node name="basic_sword_hitbox2" type="CollisionPolygon2D" parent="sword_area" unique_id=1195310844]
+[node name="basic_sword_hitbox" type="CollisionPolygon2D" parent="sword_area" unique_id=1195310844]
 polygon = PackedVector2Array(112, -80, 112, 80, 0, 0)
+disabled = true
 
 [node name="hitbox_timer" type="Timer" parent="." unique_id=588127811]
 process_callback = 0
