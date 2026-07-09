@@ -56,7 +56,6 @@ func _ready():
 	dash_charges = dash_amount
 	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
 	dash_timer.wait_time = dash_charge_cooldown
-	dash_timer.one_shot = true
 
 func set_health(new_health: float) -> void:
 	health = clamp(new_health, 0, max_health)
@@ -64,6 +63,12 @@ func set_health(new_health: float) -> void:
 		health_bar.health = health
 
 func _physics_process(delta: float) -> void:
+	var current_time = Time.get_ticks_msec()
+	if Input.is_action_just_pressed("move_left"):  left_time  = current_time
+	if Input.is_action_just_pressed("move_right"): right_time = current_time
+	if Input.is_action_just_pressed("move_up"):    up_time    = current_time
+	if Input.is_action_just_pressed("move_down"):  down_time  = current_time
+	
 	if is_dashing:
 		dash_time_left -= delta
 		if dash_time_left <= 0.0:
@@ -72,11 +77,7 @@ func _physics_process(delta: float) -> void:
 			velocity = velocity.limit_length(max_speed)
 		move_and_slide()
 		return
-	var current_time = Time.get_ticks_msec()
-	if Input.is_action_just_pressed("move_left"):  left_time  = current_time
-	if Input.is_action_just_pressed("move_right"): right_time = current_time
-	if Input.is_action_just_pressed("move_up"):    up_time    = current_time
-	if Input.is_action_just_pressed("move_down"):  down_time  = current_time
+	
 	var input_direction := Vector2.ZERO
 	if snap_tap:
 		input_direction.x = get_snap_axis("move_left", "move_right", left_time, right_time)
