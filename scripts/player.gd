@@ -24,6 +24,7 @@ var left_time: float = 0.0
 var right_time: float = 0.0
 var up_time: float = 0.0
 var down_time: float = 0.0
+
 @export var snap_tap: bool = true
 #endregion
 
@@ -82,8 +83,6 @@ func _physics_process(delta: float) -> void:
 			dash_finished.emit()
 			dash_invincible = false
 			velocity = velocity.limit_length(max_speed)
-		if Global.on_windup:
-			return
 		move_and_slide()
 		return
 	
@@ -96,11 +95,18 @@ func _physics_process(delta: float) -> void:
 		input_direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if input_direction != Vector2.ZERO:
 		last_move_direction = input_direction
-	var target_velocity = input_direction * max_speed
-	if input_direction != Vector2.ZERO:
-		velocity = velocity.move_toward(target_velocity, acceleration * delta)
-	else:
+		
+	if Global.on_windup:
+		if Global.is_dashing:
+			Global.on_windup = false
+			Global.cancelled_attack = true
 		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
+	else:
+		var target_velocity = input_direction * max_speed
+		if input_direction != Vector2.ZERO:
+			velocity = velocity.move_toward(target_velocity, acceleration * delta)
+		else:
+			velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 	move_and_slide()
 
 func get_snap_axis(negative_action: String, positive_action: String, negative_time: float, positive_time: float) -> float:

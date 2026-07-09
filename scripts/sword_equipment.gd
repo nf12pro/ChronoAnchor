@@ -8,8 +8,6 @@ extends Node2D
 
 var on_cooldown: bool = false
 
-signal basic_windup
-signal heavy_windup
 #endregion
 
 #region Hitbox
@@ -85,24 +83,26 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func basic_attack() -> void:
 	Global.on_windup = true
-	basic_windup.emit()
 	windup_timer.start(0.1)
-	await windup_timer.timeout
+	if Global.cancelled_attack: 
+		print("Cancelled Basic")
+		return
+	elif not Global.on_windup:
+		print("Basic Attack")
+		Global.on_windup = false
+		hit_enemies.clear()
+		Global.is_attacking = true
+		on_cooldown = true
+		cooldown_timer.start(0.4)
 
-	Global.on_windup = false
-	hit_enemies.clear()
-	Global.is_attacking = true
-	on_cooldown = true
-	cooldown_timer.start(0.4)
+		basic_sword_hitbox.disabled = false
+		heavy_sword_hitbox.disabled = true
+		light_sword_hitbox.disabled = true
 
-	basic_sword_hitbox.disabled = false
-	heavy_sword_hitbox.disabled = true
-	light_sword_hitbox.disabled = true
+		sword_area.monitoring = true
+		hitbox_timer.start(0.08)
 
-	sword_area.monitoring = true
-	hitbox_timer.start(0.08)
-
-	call_deferred("_check_initial_overlaps")
+		call_deferred("_check_initial_overlaps")
 
 func light_attack() -> void:
 	hit_enemies.clear()
@@ -122,25 +122,26 @@ func light_attack() -> void:
 
 func heavy_attack() -> void:
 	Global.on_windup = true
-	heavy_windup.emit()
-	Global.freeze(0.5, 0.90)
 	windup_timer.start(0.5)
-	await windup_timer.timeout
-	
-	Global.on_windup = false
-	hit_enemies.clear()
-	Global.is_attacking = true
-	on_cooldown = true
-	cooldown_timer.start(0.6)
+	if not Global.on_windup and Global.cancelled_attack:
+		print("Cancelled Heavy")
+		return
+	elif not Global.on_windup:
+		print("Heavy Attack")
+		hit_enemies.clear()
+		Global.is_attacking = true
+		on_cooldown = true
+		cooldown_timer.start(0.6)
 
-	basic_sword_hitbox.disabled = true
-	heavy_sword_hitbox.disabled = false
-	light_sword_hitbox.disabled = true
+		basic_sword_hitbox.disabled = true
+		heavy_sword_hitbox.disabled = false
+		light_sword_hitbox.disabled = true
 
-	sword_area.monitoring = true
-	hitbox_timer.start(0.12)
-
-	call_deferred("_check_initial_overlaps")
+		sword_area.monitoring = true
+		hitbox_timer.start(0.12)
+		call_deferred("_check_initial_overlaps")
+	else:
+		Global.freeze(0.01, 0.90)
 
 func _check_initial_overlaps() -> void:
 	await get_tree().physics_frame
@@ -190,3 +191,6 @@ func _on_hitbox_timer_timeout() -> void:
 
 func _on_cooldown_timer_timeout() -> void:
 	on_cooldown = false
+
+func _on_windup_timer_timeout() -> void:
+	Global.on_windup = false

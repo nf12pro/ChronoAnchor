@@ -39,3 +39,4 @@ one_shot = true
 [connection signal="body_entered" from="sword_area" to="." method="_on_sword_area_body_entered"]
 [connection signal="timeout" from="hitbox_timer" to="." method="_on_hitbox_timer_timeout"]
 [connection signal="timeout" from="cooldown_timer" to="." method="_on_cooldown_timer_timeout"]
+[connection signal="timeout" from="windup_timer" to="." method="_on_windup_timer_timeout"]
