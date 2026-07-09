@@ -26,6 +26,8 @@ func _ready() -> void:
 	sword_area.body_entered.connect(_on_sword_area_body_entered)
 
 func _process(_delta: float) -> void:
+	if attacking:
+		return
 	var mouse_pos = get_global_mouse_position()
 	global_rotation = (mouse_pos - global_position).angle()
 
