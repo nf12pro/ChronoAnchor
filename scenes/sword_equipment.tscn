@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://du0fjnu8hff8g" path="res://scripts/sword_equipment.gd" id="1_lks1c"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6esg4"]
+size = Vector2(73, 20)
+
 [node name="sword_equipment" type="Node2D" unique_id=1586162383]
 script = ExtResource("1_lks1c")
 
@@ -9,7 +12,14 @@ script = ExtResource("1_lks1c")
 collision_layer = 2
 collision_mask = 16
 
-[node name="sword_hitbox" type="CollisionPolygon2D" parent="sword_area" unique_id=891468724]
+[node name="heavy_sword_hitbox" type="CollisionPolygon2D" parent="sword_area" unique_id=891468724]
+
+[node name="light_sword_hitbox" type="CollisionShape2D" parent="sword_area" unique_id=970164624]
+position = Vector2(36.5, 0)
+shape = SubResource("RectangleShape2D_6esg4")
+
+[node name="basic_sword_hitbox2" type="CollisionPolygon2D" parent="sword_area" unique_id=1195310844]
+polygon = PackedVector2Array(112, -80, 112, 80, 0, 0)
 
 [node name="hitbox_timer" type="Timer" parent="." unique_id=588127811]
 process_callback = 0

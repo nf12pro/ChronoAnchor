@@ -5,28 +5,29 @@ extends Node2D
 @onready var hitbox_timer = $hitbox_timer
 @onready var cooldown_timer = $cooldown_timer
 
-var attacking: bool = false
 var on_cooldown: bool = false
 #endregion
 
 #region Generate Semi Circle
-@export var radius: float = 80.0
+@export var radius: float = 100.0
 @export var segments: int = 16
 @onready var collision_polygon = $sword_area/sword_hitbox
 #endregion
 
 #region Dealing Damage
-var damage = 20
 var hit_enemies: Array = []  
+
+var basic_attack_damage: int = 20
+var light_attack_damage: int = 10
+var heavy_attack_damage: int = 30
 #endregion
 
 func _ready() -> void:
 	sword_area.monitoring = false
 	hitbox_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
-	sword_area.body_entered.connect(_on_sword_area_body_entered)
 
 func _process(_delta: float) -> void:
-	if attacking:
+	if Global.is_attacking:
 		return
 	var mouse_pos = get_global_mouse_position()
 	global_rotation = (mouse_pos - global_position).angle()
@@ -38,7 +39,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func activate_hitbox() -> void:
 	if on_cooldown:
 		return
-	attacking = true
+	Global.is_attacking = true
 	cooldown_timer.start()
 	on_cooldown = true
 	generate_semi_circle()
@@ -61,12 +62,12 @@ func _on_sword_area_body_entered(body: Node) -> void:
 		return
 	if body.has_method("take_damage"):
 		hit_enemies.append(body)
-		body.take_damage(damage)
+		body.take_damage(basic_attack_damage)
 		Global.freeze(0.08, 0.02)
 
 func _on_hitbox_timer_timeout() -> void:
 	sword_area.monitoring = false
-	attacking = false
+	Global.is_attacking = false
 	collision_polygon.polygon = PackedVector2Array()  
 
 func _on_cooldown_timer_timeout() -> void:

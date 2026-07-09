@@ -36,7 +36,6 @@ var down_time: float = 0.0
 @onready var dash_tracker = $canvas_layer/dash_tracker
 
 var dash_charges: int = 3
-var is_dashing: bool = false
 var dash_time_left: float = 0.0
 var dash_direction: Vector2 = Vector2.ZERO
 var last_move_direction: Vector2 = Vector2.DOWN
@@ -69,10 +68,10 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("move_up"):    up_time    = current_time
 	if Input.is_action_just_pressed("move_down"):  down_time  = current_time
 	
-	if is_dashing:
+	if Global.is_dashing:
 		dash_time_left -= delta
 		if dash_time_left <= 0.0:
-			is_dashing = false
+			Global.is_dashing = false
 			dash_invincible = false
 			velocity = velocity.limit_length(max_speed)
 		move_and_slide()
@@ -104,9 +103,9 @@ func get_snap_axis(negative_action: String, positive_action: String, negative_ti
 	return 0.0
 
 func dash() -> void:
-	if is_dashing or dash_charges <= 0:
+	if Global.is_dashing or dash_charges <= 0:
 		return
-	is_dashing = true
+	Global.is_dashing = true
 	dash_invincible = true
 	dash_time_left = dash_duration
 	dash_direction = last_move_direction.normalized()
