@@ -1,34 +1,25 @@
 extends CharacterBody2D
 
-#region Movement
 @export var max_speed: float = 200.0
 @export var acceleration: float = 1200.0
 @export var friction: float = 1500.0
-#endregion
 
-#region Invincibility
 @onready var damage_invincible_timer = $damage_invincible_timer
 var dash_invincible: bool = false
 var damage_invincible: bool = false
-#endregion
 
-#region Health
 @onready var health_bar = $canvas_layer/health_bar
 @onready var health_timer = $health_timer
 @export var max_health: float = 100
 var health: float = 100 : set = set_health
-#endregion
 
-#region Snap Taping
 var left_time: float = 0.0
 var right_time: float = 0.0
 var up_time: float = 0.0
 var down_time: float = 0.0
 
 @export var snap_tap: bool = true
-#endregion
 
-#region Dash
 @onready var dash_timer = $dash_timer
 @onready var dash_tracker = $canvas_layer/dash_tracker
 
@@ -43,16 +34,10 @@ var last_move_direction: Vector2 = Vector2.DOWN
 @export var dash_charge_cooldown: float = 3.0
 
 signal dash_finished
-#endregion
 
-#region Attack
 @onready var sword_equipment = $sword_equipment
 
-#endregion
-
-#region Upgrades
 @export var health_recover_upgrade = false
-#endregion
 
 func _ready():
 	health = max_health
@@ -97,7 +82,7 @@ func _physics_process(delta: float) -> void:
 		last_move_direction = input_direction
 		
 	if Global.on_windup:
-		if Global.is_dashing:
+		if Global.is_dashing and sword_equipment.heavy_sword_attack:
 			Global.on_windup = false
 			Global.cancelled_attack = true
 		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
@@ -121,6 +106,9 @@ func get_snap_axis(negative_action: String, positive_action: String, negative_ti
 func dash() -> void:
 	if Global.is_dashing or dash_charges <= 0:
 		return 
+	if Global.on_windup and sword_equipment.heavy_sword_attack:
+		Global.on_windup = false
+		Global.cancelled_attack = true
 	Global.is_dashing = true
 	dash_invincible = true
 	dash_time_left = dash_duration
