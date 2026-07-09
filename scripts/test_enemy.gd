@@ -14,8 +14,14 @@ var invincibility: bool = false
 var health: float = 100 : set = set_health
 #endregion
 
+#region Stagger
+@onready var stagger_timer = $stagger_timer
+var stagger: bool = false
+#endregion
+
 #region Detection
 var player: CharacterBody2D = null
+#endregion
 
 func _ready():
 	health = max_health
@@ -24,7 +30,8 @@ func _ready():
 
 func _physics_process(_delta: float) -> void:
 	if player:
-		velocity = global_position.direction_to(player.global_position) * max_speed
+		if not stagger:
+			velocity = global_position.direction_to(player.global_position) * max_speed
 	else:
 		velocity = Vector2.ZERO 
 	invincibility = false
@@ -46,7 +53,8 @@ func set_health(new_health: float) -> void:
 
 func take_damage(damage):
 	health -= damage
-
+	stagger = true
+	stagger_timer.start()
 
 func _on_health_depleted() -> void:
 	self.queue_free()
@@ -54,3 +62,6 @@ func _on_health_depleted() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("take_damage_test"):
 		health -= 20
+
+func _on_stagger_timer_timeout() -> void:
+	stagger = false

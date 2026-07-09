@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bwiio5rwwi5dp" path="res://scenes/player.tscn" id="1_2j2p2"]
 [ext_resource type="PackedScene" uid="uid://oc4j4b2x48bv" path="res://scenes/test_enemy.tscn" id="2_2j2p2"]
+[ext_resource type="PackedScene" uid="uid://bbkit7y8fwlse" path="res://scenes/sword_equipment.tscn" id="3_v6rby"]
 
 [node name="testing_scene" type="Node2D" unique_id=1774393185]
 
@@ -10,3 +11,6 @@ position = Vector2(480, 224)
 
 [node name="test_enemy" parent="." unique_id=101213513 instance=ExtResource("2_2j2p2")]
 position = Vector2(672, 224)
+
+[node name="sword_equipment" parent="." unique_id=1586162383 instance=ExtResource("3_v6rby")]
+position = Vector2(384, 160)

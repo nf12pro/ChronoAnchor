@@ -83,13 +83,16 @@ offset_bottom = -1.0
 grow_vertical = 0
 
 [node name="health_timer" type="Timer" parent="." unique_id=899907336]
+process_callback = 0
 wait_time = 0.2
 
 [node name="dash_timer" type="Timer" parent="." unique_id=1841688279]
+process_callback = 0
 wait_time = 3.0
 one_shot = true
 
 [node name="damage_invincible_timer" type="Timer" parent="." unique_id=1337293071]
+process_callback = 0
 wait_time = 0.5
 one_shot = true
 

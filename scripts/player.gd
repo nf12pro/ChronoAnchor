@@ -122,7 +122,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			health -= 10
 			damage_invincible_timer.start()
 			damage_invincible = true
-			Global.freeze(0.08, 0.02)
+			Global.freeze(0.18, 0.02)
 	if event.is_action_pressed("dash"):
 		dash()
 

@@ -66,7 +66,11 @@ collision_mask = 10
 [node name="detection_hitbox" type="CollisionShape2D" parent="detection_range" unique_id=1594368415]
 shape = SubResource("CircleShape2D_6esg4")
 
-[node name="invincibility_timer" type="Timer" parent="." unique_id=323352684]
+[node name="stagger_timer" type="Timer" parent="." unique_id=323352684]
+process_callback = 0
+wait_time = 0.25
+one_shot = true
 
 [connection signal="body_entered" from="detection_range" to="." method="_on_detection_range_body_entered"]
 [connection signal="body_exited" from="detection_range" to="." method="_on_detection_range_body_exited"]
+[connection signal="timeout" from="stagger_timer" to="." method="_on_stagger_timer_timeout"]

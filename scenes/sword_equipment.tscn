@@ -12,4 +12,9 @@ collision_mask = 16
 
 [node name="sword_hitbox" type="CollisionPolygon2D" parent="sword_area" unique_id=891468724]
 
+[node name="hitbox_timer" type="Timer" parent="." unique_id=588127811]
+process_callback = 0
+wait_time = 0.05
+one_shot = true
+
 [connection signal="body_entered" from="sword_area" to="." method="_on_sword_area_body_entered"]
