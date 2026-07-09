@@ -103,7 +103,7 @@ func get_snap_axis(negative_action: String, positive_action: String, negative_ti
 	if negative_held: return -1.0
 	return 0.0
 
-func dash():
+func dash() -> void:
 	if is_dashing or dash_charges <= 0:
 		return
 	is_dashing = true
@@ -122,6 +122,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			health -= 10
 			damage_invincible_timer.start()
 			damage_invincible = true
+			Global.freeze(0.08, 0.02)
 	if event.is_action_pressed("dash"):
 		dash()
 

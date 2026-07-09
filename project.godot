@@ -17,6 +17,10 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 run/max_fps=60
 config/icon="res://icon.svg"
 
+[autoload]
+
+Global="*uid://ctdjkod2yok50"
+
 [display]
 
 window/size/viewport_width=960
