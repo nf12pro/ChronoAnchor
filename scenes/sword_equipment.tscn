@@ -6,7 +6,6 @@
 script = ExtResource("1_lks1c")
 
 [node name="sword_area" type="Area2D" parent="." unique_id=1393820661]
-position = Vector2(501, 243)
 collision_layer = 2
 collision_mask = 16
 
@@ -18,3 +17,4 @@ wait_time = 0.05
 one_shot = true
 
 [connection signal="body_entered" from="sword_area" to="." method="_on_sword_area_body_entered"]
+[connection signal="timeout" from="hitbox_timer" to="." method="_on_hitbox_timer_timeout"]
