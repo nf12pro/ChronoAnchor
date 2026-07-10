@@ -170,8 +170,8 @@ func place_save_state() -> void:
 	
 	var save_state_sprite_loaded = save_state_sprite.instantiate()
 	
-	save_state_sprite_loaded.global_position.x = global_position.x + 480
-	save_state_sprite_loaded.global_position.y = global_position.y + 270
+	save_state_sprite_loaded.global_position.x = global_position.x 
+	save_state_sprite_loaded.global_position.y = global_position.y
 	
 	get_parent().add_child(save_state_sprite_loaded)
 	
@@ -195,7 +195,6 @@ func rewind_to_save_state() -> void:
 	save_state_y_location.remove_at(0)
 	
 	save_state_nodes.remove_at(0)
-	save_state_placed -= 1
 	
 	save_state_tracker.text = "[b]" + str(save_state_max_amount - save_state_placed) + "/" + str(save_state_max_amount) + "[/b]"
 	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
