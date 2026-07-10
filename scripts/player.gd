@@ -51,6 +51,8 @@ signal dash_finished
 @onready var sword_equipment = $sword_equipment
 
 #region Save State
+@onready var save_state_tracker = $save_state_tracker
+
 const save_state_sprite = preload("res://scenes/save_state_sprite_loading.tscn")
 
 @export var save_state_max_amount: int = 1
@@ -164,6 +166,8 @@ func place_save_state() -> void:
 	save_state_x_location.append(global_position.x)
 	save_state_y_location.append(global_position.y)
 	
+	save_state_tracker.text = "[b]" + str(save_state_max_amount - save_state_placed) + "/" + str(save_state_max_amount) + "[/b]"
+	
 	var save_state_sprite_loaded = save_state_sprite.instantiate()
 	
 	save_state_sprite_loaded.global_position.x = global_position.x + 480
@@ -176,8 +180,6 @@ func place_save_state() -> void:
 func rewind_to_save_state() -> void:
 	dash_charges = save_state_dash_charges[0]
 	health = save_state_health[0]
-	
-	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
 	
 	global_position.x = save_state_x_location[0]
 	global_position.y = save_state_y_location[0]
@@ -194,6 +196,9 @@ func rewind_to_save_state() -> void:
 	
 	save_state_nodes.remove_at(0)
 	save_state_placed -= 1
+	
+	save_state_tracker.text = "[b]" + str(save_state_max_amount - save_state_placed) + "/" + str(save_state_max_amount) + "[/b]"
+	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
 
 func _on_health_depleted() -> void:
 	print("Player died")
