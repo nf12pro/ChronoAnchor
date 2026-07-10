@@ -32,6 +32,12 @@ size = Vector2(32, 58)
 [sub_resource type="CircleShape2D" id="CircleShape2D_6esg4"]
 radius = 129.18979
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6esg4"]
+size = Vector2(97.75, 152)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jooh5"]
+size = Vector2(85.75, 135)
+
 [node name="test_enemy" type="CharacterBody2D" unique_id=142865822]
 collision_layer = 16
 collision_mask = 2
@@ -43,7 +49,7 @@ sprite_frames = SubResource("SpriteFrames_6esg4")
 autoplay = "default"
 frame_progress = 0.12391861
 
-[node name="collision_shape_2d" type="CollisionShape2D" parent="." unique_id=1128658469]
+[node name="hurtbox_hitbox" type="CollisionShape2D" parent="." unique_id=1128658469]
 shape = SubResource("RectangleShape2D_hv2ic")
 
 [node name="health_bar" parent="." unique_id=2078701455 instance=ExtResource("4_1y3pe")]
@@ -63,11 +69,44 @@ collision_mask = 10
 [node name="detection_hitbox" type="CollisionShape2D" parent="detection_range" unique_id=1594368415]
 shape = SubResource("CircleShape2D_6esg4")
 
+[node name="enemy_area" type="Area2D" parent="." unique_id=2020769859]
+collision_layer = 4
+collision_mask = 8
+
+[node name="enemy_hitbox" type="CollisionShape2D" parent="enemy_area" unique_id=246020562]
+shape = SubResource("RectangleShape2D_6esg4")
+disabled = true
+
+[node name="attack_range" type="Area2D" parent="." unique_id=673315667]
+collision_layer = 4
+collision_mask = 8
+
+[node name="attack_range_hitbox" type="CollisionShape2D" parent="attack_range" unique_id=1423636057]
+shape = SubResource("RectangleShape2D_jooh5")
+
+[node name="cooldown_timer" type="Timer" parent="." unique_id=1280477401]
+process_callback = 0
+
 [node name="stagger_timer" type="Timer" parent="." unique_id=323352684]
 process_callback = 0
 wait_time = 0.25
 one_shot = true
 
+[node name="windup_timer" type="Timer" parent="." unique_id=2622098]
+process_callback = 0
+wait_time = 0.3
+one_shot = true
+
+[node name="hitbox_timer" type="Timer" parent="." unique_id=2007262019]
+process_callback = 0
+wait_time = 0.15
+
 [connection signal="body_entered" from="detection_range" to="." method="_on_detection_range_body_entered"]
 [connection signal="body_exited" from="detection_range" to="." method="_on_detection_range_body_exited"]
+[connection signal="body_entered" from="enemy_area" to="." method="_on_enemy_area_body_entered"]
+[connection signal="body_entered" from="attack_range" to="." method="_on_attack_range_body_entered"]
+[connection signal="body_exited" from="attack_range" to="." method="_on_attack_range_body_exited"]
+[connection signal="timeout" from="cooldown_timer" to="." method="_on_cooldown_timer_timeout"]
 [connection signal="timeout" from="stagger_timer" to="." method="_on_stagger_timer_timeout"]
+[connection signal="timeout" from="windup_timer" to="." method="_on_windup_timer_timeout"]
+[connection signal="timeout" from="hitbox_timer" to="." method="_on_hitbox_timer_timeout"]

@@ -158,6 +158,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		place_save_state()
 	if event.is_action_pressed("rewind_to_save_state") and save_state_placed > 0:
 		rewind_to_save_state()
+	if event.is_action_pressed("parry") and not Global.is_dashing and not Global.is_attacking:
+		pass
 
 func place_save_state() -> void:
 	save_state_placed += 1
@@ -198,6 +200,9 @@ func rewind_to_save_state() -> void:
 	
 	save_state_tracker.text = "[b]" + str(save_state_max_amount - save_state_placed) + "/" + str(save_state_max_amount) + "[/b]"
 	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
+
+func take_damage(damage):
+	health -= damage
 
 func _on_health_depleted() -> void:
 	print("Player died")
