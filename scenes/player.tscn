@@ -35,26 +35,31 @@ size = Vector2(32, 58)
 collision_layer = 2
 script = ExtResource("1_g2els")
 
-[node name="animated_sprite_2d" type="AnimatedSprite2D" parent="." unique_id=2084851377]
-sprite_frames = SubResource("SpriteFrames_6esg4")
-autoplay = "default"
-frame_progress = 0.12391861
+[node name="health_bar" parent="." unique_id=2078701455 instance=ExtResource("3_qhqgy")]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 510.0
+offset_right = 401.0
+offset_bottom = 540.0
+grow_vertical = 0
 
-[node name="collision_shape_2d" type="CollisionShape2D" parent="." unique_id=1128658469]
-shape = SubResource("RectangleShape2D_hv2ic")
+[node name="dash_shard" type="Sprite2D" parent="." unique_id=290740632]
+position = Vector2(496, 524)
+scale = Vector2(2, 2)
+texture = ExtResource("4_dqkch")
 
-[node name="canvas_layer" type="CanvasLayer" parent="." unique_id=527961938]
-
-[node name="dash_tracker" type="RichTextLabel" parent="canvas_layer" unique_id=517359511]
+[node name="dash_tracker" type="RichTextLabel" parent="." unique_id=517359511]
 anchors_preset = -1
 anchor_left = 0.42000002
 anchor_top = 0.94100004
 anchor_right = 0.51000005
 anchor_bottom = 0.998
-offset_left = -0.2000122
-offset_top = -0.14001465
-offset_right = 0.39996338
-offset_bottom = 0.079956055
+offset_left = 403.0
+offset_top = 508.0
+offset_right = 483.0
+offset_bottom = 540.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/default_color = Color(0.75986844, 0.5605189, 0.16995767, 1)
@@ -66,20 +71,18 @@ scroll_active = false
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="dash_shard" type="Sprite2D" parent="canvas_layer" unique_id=290740632]
-position = Vector2(496, 524)
-scale = Vector2(2, 2)
-texture = ExtResource("4_dqkch")
+[node name="player_sprite" type="AnimatedSprite2D" parent="." unique_id=2084851377]
+position = Vector2(480, 271)
+sprite_frames = SubResource("SpriteFrames_6esg4")
+autoplay = "default"
+frame_progress = 0.12391861
 
-[node name="health_bar" parent="canvas_layer" unique_id=2078701455 instance=ExtResource("3_qhqgy")]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = -31.0
-offset_right = 401.0
-offset_bottom = -1.0
-grow_vertical = 0
+[node name="player_hurtbox" type="CollisionShape2D" parent="." unique_id=1128658469]
+position = Vector2(480, 271)
+shape = SubResource("RectangleShape2D_hv2ic")
+
+[node name="canvas_layer" type="CanvasLayer" parent="." unique_id=527961938]
+follow_viewport_enabled = true
 
 [node name="health_timer" type="Timer" parent="." unique_id=899907336]
 process_callback = 0
@@ -96,6 +99,10 @@ wait_time = 0.5
 one_shot = true
 
 [node name="sword_equipment" parent="." unique_id=1586162383 instance=ExtResource("5_qlg0r")]
+position = Vector2(480, 271)
+
+[node name="camera_2d" type="Camera2D" parent="." unique_id=843484154]
+position = Vector2(480, 271)
 
 [connection signal="timeout" from="health_timer" to="." method="_on_health_timer_timeout"]
 [connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]

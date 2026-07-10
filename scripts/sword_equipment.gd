@@ -40,7 +40,6 @@ var combo_ready: bool = false
 @onready var combo_timer = $combo_timer
 #endregion
 
-
 func _ready() -> void:
 	sword_area.monitoring = false
 	basic_sword_hitbox.disabled = true

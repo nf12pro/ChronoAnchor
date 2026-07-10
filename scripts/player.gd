@@ -1,32 +1,44 @@
 extends CharacterBody2D
 
+#region Movement
 @export var max_speed: float = 200.0
 @export var acceleration: float = 1200.0
 @export var friction: float = 1500.0
+#endregion
 
+#region Invincibility
 @onready var damage_invincible_timer = $damage_invincible_timer
 var dash_invincible: bool = false
 var damage_invincible: bool = false
+#endregion
 
-@onready var health_bar = $canvas_layer/health_bar
+#region Health
+@onready var health_bar = $health_bar
 @onready var health_timer = $health_timer
 @export var max_health: float = 100
 var health: float = 100 : set = set_health
 
+@export var health_recover_upgrade = false
+#endregion
+
+#region Snap Tap
 var left_time: float = 0.0
 var right_time: float = 0.0
 var up_time: float = 0.0
 var down_time: float = 0.0
 
 @export var snap_tap: bool = true
+#endregion
 
+#region Dashing
 @onready var dash_timer = $dash_timer
-@onready var dash_tracker = $canvas_layer/dash_tracker
+@onready var dash_tracker = $dash_tracker
 
 var dash_charges: int = 3
 var dash_time_left: float = 0.0
 var dash_direction: Vector2 = Vector2.ZERO
 var last_move_direction: Vector2 = Vector2.DOWN
+
 
 @export var dash_amount: int = 3
 @export var dash_speed: float = 600.0
@@ -34,10 +46,18 @@ var last_move_direction: Vector2 = Vector2.DOWN
 @export var dash_charge_cooldown: float = 3.0
 
 signal dash_finished
+#endregion
 
 @onready var sword_equipment = $sword_equipment
 
-@export var health_recover_upgrade = false
+#region Save-Stating
+@export var save_state_amount: int = 1
+var save_state_placed: int = 0
+var save_state_dash_amount: Array = []
+var save_state_health: Array = []
+var save_state_x_location: Array = []
+var save_state_y_location: Array = []
+#endregion
 
 func _ready():
 	health = max_health
@@ -128,6 +148,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			Global.freeze(0.18, 0.02)
 	if event.is_action_pressed("dash"):
 		dash()
+
+func place_save_state() -> void:
+	pass
+
+func save_state() -> void:
+	pass
 
 func _on_health_depleted() -> void:
 	print("Player died")
