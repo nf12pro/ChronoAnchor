@@ -6,6 +6,8 @@ var is_attacking: bool = false
 var on_windup: bool = false
 var cancelled_attack: bool = false
 
+var player_global_position : Vector2
+
 func freeze(duration, scale) -> void:
 	request_id += 1
 	var my_id = request_id

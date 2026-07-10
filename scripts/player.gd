@@ -91,6 +91,7 @@ func set_health(new_health: float) -> void:
 		health_bar.health = health
 
 func _physics_process(delta: float) -> void:
+	Global.player_global_position = self.global_position
 	var current_time = Time.get_ticks_msec()
 	if Input.is_action_just_pressed("move_left"):  left_time  = current_time
 	if Input.is_action_just_pressed("move_right"): right_time = current_time

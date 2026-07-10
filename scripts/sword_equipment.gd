@@ -58,8 +58,8 @@ func generate_semi_circle() -> void:
 func _process(_delta: float) -> void:
 	if Global.is_attacking or Global.on_windup:
 		return 
-	var mouse_pos = get_global_mouse_position() 
-	global_rotation = (mouse_pos - global_position).angle()
+	var mouse_position = get_global_mouse_position() 
+	global_rotation = (mouse_position - global_position).angle()
  
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("basic_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:

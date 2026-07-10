@@ -1,0 +1,101 @@
+[gd_scene format=3 uid="uid://c5rd8jllrhrex"]
+
+[ext_resource type="Script" uid="uid://bdyi7igjfolm0" path="res://scripts/long_range_enemy.gd" id="1_78btl"]
+[ext_resource type="Texture2D" uid="uid://cyx23xojcaqrv" path="res://assets/prototype_player_default_animation.png" id="2_brokm"]
+[ext_resource type="PackedScene" uid="uid://b7weh1oqtsr78" path="res://scenes/health_bar.tscn" id="3_o57mj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
+atlas = ExtResource("2_brokm")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qhqgy"]
+atlas = ExtResource("2_brokm")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6esg4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g2els")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qhqgy")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hv2ic"]
+size = Vector2(32, 58)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6esg4"]
+radius = 440.0182
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yorin"]
+radius = 331.26727
+
+[node name="long_range_enemy" type="CharacterBody2D" unique_id=142865822]
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("1_78btl")
+
+[node name="animated_sprite_2d" type="AnimatedSprite2D" parent="." unique_id=2084851377]
+modulate = Color(0.44277847, 0.11753269, 0.48054343, 1)
+sprite_frames = SubResource("SpriteFrames_6esg4")
+autoplay = "default"
+frame_progress = 0.12391861
+
+[node name="hurtbox_hitbox" type="CollisionShape2D" parent="." unique_id=1128658469]
+shape = SubResource("RectangleShape2D_hv2ic")
+
+[node name="health_bar" parent="." unique_id=2078701455 instance=ExtResource("3_o57mj")]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -28.0
+offset_top = -48.0
+offset_right = 31.0
+offset_bottom = -37.0
+grow_vertical = 0
+
+[node name="detection_range" type="Area2D" parent="." unique_id=33275608]
+collision_layer = 4
+collision_mask = 10
+
+[node name="detection_hitbox" type="CollisionShape2D" parent="detection_range" unique_id=1594368415]
+shape = SubResource("CircleShape2D_6esg4")
+
+[node name="attack_range" type="Area2D" parent="." unique_id=673315667]
+collision_layer = 4
+collision_mask = 8
+
+[node name="attack_range_hitbox" type="CollisionShape2D" parent="attack_range" unique_id=1423636057]
+shape = SubResource("CircleShape2D_yorin")
+
+[node name="cooldown_timer" type="Timer" parent="." unique_id=1280477401]
+process_callback = 0
+wait_time = 3.0
+one_shot = true
+
+[node name="stagger_timer" type="Timer" parent="." unique_id=323352684]
+process_callback = 0
+wait_time = 0.25
+one_shot = true
+
+[node name="windup_timer" type="Timer" parent="." unique_id=2622098]
+process_callback = 0
+one_shot = true
+
+[node name="hitbox_timer" type="Timer" parent="." unique_id=2007262019]
+process_callback = 0
+wait_time = 0.15
+one_shot = true
+
+[connection signal="body_entered" from="detection_range" to="." method="_on_detection_range_body_entered"]
+[connection signal="body_exited" from="detection_range" to="." method="_on_detection_range_body_exited"]
+[connection signal="body_entered" from="attack_range" to="." method="_on_attack_range_body_entered"]
+[connection signal="body_exited" from="attack_range" to="." method="_on_attack_range_body_exited"]
+[connection signal="timeout" from="cooldown_timer" to="." method="_on_cooldown_timer_timeout"]
+[connection signal="timeout" from="stagger_timer" to="." method="_on_stagger_timer_timeout"]
+[connection signal="timeout" from="hitbox_timer" to="." method="_on_hitbox_timer_timeout"]
