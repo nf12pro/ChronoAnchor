@@ -110,5 +110,4 @@ one_shot = true
 [connection signal="body_exited" from="attack_range" to="." method="_on_attack_range_body_exited"]
 [connection signal="timeout" from="cooldown_timer" to="." method="_on_cooldown_timer_timeout"]
 [connection signal="timeout" from="stagger_timer" to="." method="_on_stagger_timer_timeout"]
-[connection signal="timeout" from="windup_timer" to="." method="_on_windup_timer_timeout"]
 [connection signal="timeout" from="hitbox_timer" to="." method="_on_hitbox_timer_timeout"]

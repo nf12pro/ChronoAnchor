@@ -4,6 +4,12 @@ extends CharacterBody2D
 @export var max_speed: float = 25.0
 #endregion
 
+#region Soft Collision
+const SoftCollision = preload("res://scripts/soft_collision.gd")
+var soft_collision: Area2D
+@export var soft_collision_strength: float = 120.0
+#endregion
+
 #region Invincibility
 var invincibility: bool = false
 #endregion
@@ -45,6 +51,10 @@ func _ready():
 	health_bar.health_depleted.connect(_on_health_depleted)
 	enemy_area.monitoring = false
 	enemy_hitbox.disabled = true
+	
+	soft_collision = SoftCollision.new()
+	soft_collision.radius = 20.0 
+	add_child(soft_collision)
 
 func _physics_process(_delta: float) -> void:
 	if player:
@@ -58,6 +68,10 @@ func _physics_process(_delta: float) -> void:
 		velocity = Vector2.ZERO
 	invincibility = false
 	velocity = velocity.limit_length(max_speed)
+	
+	if soft_collision and soft_collision.is_overlapping():
+		velocity += soft_collision.get_push_vector() * soft_collision_strength
+		
 	move_and_slide()
 
 func _on_detection_range_body_entered(body: Node2D) -> void:
@@ -132,6 +146,3 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _on_stagger_timer_timeout() -> void:
 	stagger = false
-
-func _on_windup_timer_timeout() -> void:
-	pass # Replace with function body.

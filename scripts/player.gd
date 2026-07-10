@@ -6,6 +6,12 @@ extends CharacterBody2D
 @export var friction: float = 1500.0
 #endregion
 
+#region Soft Collision
+const SoftCollision = preload("res://scripts/soft_collision.gd")
+var soft_collision: Area2D
+@export var soft_collision_strength: float = 150.0
+#endregion
+
 #region Invincibility
 @onready var damage_invincible_timer = $damage_invincible_timer
 var dash_invincible: bool = false
@@ -74,6 +80,10 @@ func _ready():
 	dash_charges = dash_amount
 	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
 	dash_timer.wait_time = dash_charge_cooldown
+	
+	soft_collision = SoftCollision.new()
+	soft_collision.radius = 20.0 
+	add_child(soft_collision)
 
 func set_health(new_health: float) -> void:
 	health = clamp(new_health, 0, max_health)
@@ -88,6 +98,10 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("move_down"):  down_time  = current_time
 	
 	if Global.is_dashing:
+		if soft_collision and (soft_collision.monitoring or soft_collision.monitorable):
+			soft_collision.monitoring = false
+			soft_collision.monitorable = false
+
 		dash_time_left -= delta
 		if dash_time_left <= 0.0:
 			Global.is_dashing = false
@@ -97,6 +111,10 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 	
+	if soft_collision and not (soft_collision.monitoring and soft_collision.monitorable):
+		soft_collision.monitoring = true
+		soft_collision.monitorable = true
+
 	var input_direction := Vector2.ZERO
 	if snap_tap:
 		input_direction.x = get_snap_axis("move_left", "move_right", left_time, right_time)
@@ -118,6 +136,10 @@ func _physics_process(delta: float) -> void:
 			velocity = velocity.move_toward(target_velocity, acceleration * delta)
 		else:
 			velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
+	
+	if soft_collision and soft_collision.is_overlapping():
+		velocity += soft_collision.get_push_vector() * soft_collision_strength
+
 	move_and_slide()
 
 func get_snap_axis(negative_action: String, positive_action: String, negative_time: float, positive_time: float) -> float:
