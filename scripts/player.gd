@@ -50,13 +50,17 @@ signal dash_finished
 
 @onready var sword_equipment = $sword_equipment
 
-#region Save-Stating
-@export var save_state_amount: int = 1
+#region Save State
+const save_state_sprite = preload("res://scenes/save_state_sprite_loading.tscn")
+
+@export var save_state_max_amount: int = 1
 var save_state_placed: int = 0
-var save_state_dash_amount: Array = []
+var save_state_dash_charges: Array = []
 var save_state_health: Array = []
 var save_state_x_location: Array = []
 var save_state_y_location: Array = []
+
+var save_state_nodes: Array = []
 #endregion
 
 func _ready():
@@ -148,11 +152,28 @@ func _unhandled_input(event: InputEvent) -> void:
 			Global.freeze(0.18, 0.02)
 	if event.is_action_pressed("dash"):
 		dash()
+	if event.is_action_pressed("place_save_state") and save_state_placed < save_state_max_amount:
+		place_save_state()
+	if event.is_action_pressed("rewind_to_save_state") and save_state_placed > 0:
+		rewind_to_save_state()
 
 func place_save_state() -> void:
-	pass
+	save_state_placed += 1
+	save_state_dash_charges.append(dash_charges)
+	save_state_health.append(health)
+	save_state_x_location.append(global_position.x + 480)
+	save_state_y_location.append(global_position.y + 270)
+	
+	var save_state_sprite_loaded = save_state_sprite.instantiate()
+	
+	save_state_sprite_loaded.global_position.x = global_position.x + 480
+	save_state_sprite_loaded.global_position.y = global_position.y + 270
+	
+	get_parent().add_child(save_state_sprite_loaded)
+	
+	save_state_nodes.append(save_state_sprite_loaded)
 
-func save_state() -> void:
+func rewind_to_save_state() -> void:
 	pass
 
 func _on_health_depleted() -> void:
