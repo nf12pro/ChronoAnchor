@@ -86,6 +86,7 @@ shape = SubResource("RectangleShape2D_jooh5")
 
 [node name="cooldown_timer" type="Timer" parent="." unique_id=1280477401]
 process_callback = 0
+one_shot = true
 
 [node name="stagger_timer" type="Timer" parent="." unique_id=323352684]
 process_callback = 0
@@ -100,6 +101,7 @@ one_shot = true
 [node name="hitbox_timer" type="Timer" parent="." unique_id=2007262019]
 process_callback = 0
 wait_time = 0.15
+one_shot = true
 
 [connection signal="body_entered" from="detection_range" to="." method="_on_detection_range_body_entered"]
 [connection signal="body_exited" from="detection_range" to="." method="_on_detection_range_body_exited"]
