@@ -161,8 +161,8 @@ func place_save_state() -> void:
 	save_state_placed += 1
 	save_state_dash_charges.append(dash_charges)
 	save_state_health.append(health)
-	save_state_x_location.append(global_position.x + 480)
-	save_state_y_location.append(global_position.y + 270)
+	save_state_x_location.append(global_position.x)
+	save_state_y_location.append(global_position.y)
 	
 	var save_state_sprite_loaded = save_state_sprite.instantiate()
 	
@@ -174,7 +174,26 @@ func place_save_state() -> void:
 	save_state_nodes.append(save_state_sprite_loaded)
 
 func rewind_to_save_state() -> void:
-	pass
+	dash_charges = save_state_dash_charges[0]
+	health = save_state_health[0]
+	
+	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
+	
+	global_position.x = save_state_x_location[0]
+	global_position.y = save_state_y_location[0]
+	
+	var active_sprite = save_state_nodes[0]
+	
+	if is_instance_valid(active_sprite):
+		active_sprite.queue_free()
+	
+	save_state_dash_charges.remove_at(0)
+	save_state_health.remove_at(0)
+	save_state_x_location.remove_at(0)
+	save_state_y_location.remove_at(0)
+	
+	save_state_nodes.remove_at(0)
+	save_state_placed -= 1
 
 func _on_health_depleted() -> void:
 	print("Player died")
