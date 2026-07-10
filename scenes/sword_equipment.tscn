@@ -36,7 +36,13 @@ one_shot = true
 [node name="windup_timer" type="Timer" parent="." unique_id=349641787]
 one_shot = true
 
+[node name="combo_timer" type="Timer" parent="." unique_id=841078747]
+process_callback = 0
+wait_time = 0.5
+one_shot = true
+
 [connection signal="body_entered" from="sword_area" to="." method="_on_sword_area_body_entered"]
 [connection signal="timeout" from="hitbox_timer" to="." method="_on_hitbox_timer_timeout"]
 [connection signal="timeout" from="cooldown_timer" to="." method="_on_cooldown_timer_timeout"]
 [connection signal="timeout" from="windup_timer" to="." method="_on_windup_timer_timeout"]
+[connection signal="timeout" from="combo_timer" to="." method="_on_combo_timer_timeout"]
