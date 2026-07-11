@@ -4,6 +4,12 @@ extends CharacterBody2D
 @export var max_speed: float = 25.0
 #endregion
 
+#region Knockback
+var knockback_velocity: Vector2 = Vector2.ZERO
+@export var knockback_friction: float = 600.0
+@export var knockback_strength: float = 400.0
+#endregion
+
 #region Soft Collision
 const SoftCollision = preload("res://scripts/systems/soft_collision.gd")
 var soft_collision: Area2D
@@ -57,17 +63,20 @@ func _ready():
 	add_child(soft_collision)
 
 func _physics_process(_delta: float) -> void:
+	var target_velocity = Vector2.ZERO
+	
 	if player:
 		if not stagger and not is_attacking:
-			velocity = global_position.direction_to(player.global_position) * max_speed
-		else:
-			velocity = Vector2.ZERO
+			target_velocity = global_position.direction_to(player.global_position) * max_speed
 		if in_attack_range and not on_cooldown and not stagger and not is_attacking:
 			attack()
-	else:
-		velocity = Vector2.ZERO
+			
 	invincibility = false
-	velocity = velocity.limit_length(max_speed)
+	
+	if knockback_velocity != Vector2.ZERO:
+		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_friction * _delta)
+	
+	velocity = target_velocity + knockback_velocity
 	
 	if soft_collision and soft_collision.is_overlapping():
 		velocity += soft_collision.get_push_vector() * soft_collision_strength
@@ -116,7 +125,11 @@ func _on_enemy_area_body_entered(body: Node) -> void:
 	if not body.has_method("take_damage"):
 		return
 	hit_player = true
-	body.take_damage(dealing_damage)
+	
+	var knockback_dir = global_position.direction_to(body.global_position)
+	var knockback_force = knockback_dir * knockback_strength
+	
+	body.take_damage(dealing_damage, knockback_force)
 
 func _on_hitbox_timer_timeout() -> void:
 	enemy_hitbox.disabled = true
@@ -132,9 +145,10 @@ func set_health(new_health: float) -> void:
 	if health_bar:
 		health_bar.health = health
 
-func take_damage(damage):
+func take_damage(damage: float, knockback_force: Vector2 = Vector2.ZERO) -> void:
 	health -= damage
 	stagger = true
+	knockback_velocity = knockback_force
 	stagger_timer.start()
 
 func _on_health_depleted() -> void:

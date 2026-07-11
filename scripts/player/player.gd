@@ -8,6 +8,11 @@ extends CharacterBody2D
 @export var friction: float = 1500.0
 #endregion
 
+#region Knockback
+var knockback_velocity: Vector2 = Vector2.ZERO
+@export var knockback_friction: float = 2000.0
+#endregion
+
 #region Soft Collision
 const SoftCollision = preload("res://scripts/systems/soft_collision.gd")
 var soft_collision: Area2D
@@ -46,7 +51,6 @@ var dash_charges: int = 3
 var dash_time_left: float = 0.0
 var dash_direction: Vector2 = Vector2.ZERO
 var last_move_direction: Vector2 = Vector2.DOWN
-
 
 @export var dash_amount: int = 3
 @export var dash_speed: float = 600.0
@@ -111,6 +115,10 @@ func set_health(new_health: float) -> void:
 func _physics_process(delta: float) -> void:
 	Global.player_global_position = self.global_position
 	var current_time = Time.get_ticks_msec()
+	
+	if knockback_velocity != Vector2.ZERO:
+		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_friction * delta)
+	
 	if Input.is_action_just_pressed("move_left"):  left_time  = current_time
 	if Input.is_action_just_pressed("move_right"): right_time = current_time
 	if Input.is_action_just_pressed("move_up"):    up_time    = current_time
@@ -127,7 +135,11 @@ func _physics_process(delta: float) -> void:
 			dash_finished.emit()
 			dash_invincible = false
 			velocity = velocity.limit_length(max_speed)
+		
+		var dash_base_vel = velocity
+		velocity += knockback_velocity
 		move_and_slide()
+		velocity = dash_base_vel
 		return
 	
 	if soft_collision and not (soft_collision.monitoring and soft_collision.monitorable):
@@ -159,7 +171,10 @@ func _physics_process(delta: float) -> void:
 	if soft_collision and soft_collision.is_overlapping():
 		velocity += soft_collision.get_push_vector() * soft_collision_strength
 
+	var normal_base_vel = velocity
+	velocity += knockback_velocity
 	move_and_slide()
+	velocity = normal_base_vel
 
 func get_snap_axis(negative_action: String, positive_action: String, negative_time: float, positive_time: float) -> float:
 	var negative_held = Input.is_action_pressed(negative_action)
@@ -208,12 +223,9 @@ func place_save_state() -> void:
 	save_state_tracker.text = "[b]" + str(save_state_max_amount - save_state_placed) + "/" + str(save_state_max_amount) + "[/b]"
 	
 	var save_state_sprite_loaded = save_state_sprite.instantiate()
-	
 	save_state_sprite_loaded.global_position.x = global_position.x 
 	save_state_sprite_loaded.global_position.y = global_position.y
-	
 	get_parent().add_child(save_state_sprite_loaded)
-	
 	save_state_nodes.append(save_state_sprite_loaded)
 
 func rewind_to_save_state() -> void:
@@ -224,7 +236,6 @@ func rewind_to_save_state() -> void:
 	global_position.y = save_state_y_location[0]
 	
 	var active_sprite = save_state_nodes[0]
-	
 	if is_instance_valid(active_sprite):
 		active_sprite.queue_free()
 	
@@ -232,14 +243,14 @@ func rewind_to_save_state() -> void:
 	save_state_health.remove_at(0)
 	save_state_x_location.remove_at(0)
 	save_state_y_location.remove_at(0)
-	
 	save_state_nodes.remove_at(0)
 	
 	save_state_tracker.text = "[b]" + str(save_state_max_amount - save_state_placed) + "/" + str(save_state_max_amount) + "[/b]"
 	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
 
-func take_damage(damage) -> void:
+func take_damage(damage: float, knockback_force: Vector2 = Vector2.ZERO) -> void:
 	health -= damage
+	knockback_velocity = knockback_force
 
 func parry() -> void:
 	is_parrying = true

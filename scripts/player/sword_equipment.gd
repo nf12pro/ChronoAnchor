@@ -29,9 +29,13 @@ var light_sword_attack: bool = false
 
 var hit_enemies: Array = []
 
-var basic_attack_damage: int = 20
-var light_attack_damage: int = 10
-var heavy_attack_damage: int = 30
+@export var basic_attack_damage: int = 20
+@export var light_attack_damage: int = 10
+@export var heavy_attack_damage: int = 30
+
+@export var basic_knockback: float = 150.0
+@export var light_knockback: float = 100.0
+@export var heavy_knockback: float = 600.0
 #endregion
 
 #region Combo
@@ -171,22 +175,27 @@ func _on_sword_area_body_entered(body: Node) -> void:
  
 	hit_enemies.append(body)
 	var damage := basic_attack_damage
- 
-	if light_sword_attack:
+	var knockback_force := basic_knockback
+	if light_sword_attack: 
 		damage = light_attack_damage
+		knockback_force = light_knockback
 		Global.freeze(0.035, 0.03)
 	elif heavy_sword_attack:
 		damage = heavy_attack_damage
+		knockback_force = heavy_knockback
 		Global.freeze(0.10, 0.01)
 	else:
 		damage = basic_attack_damage
+		knockback_force = basic_knockback
 		if combo_step == 1:
+			knockback_force = basic_knockback * 1.25 
 			damage = int(basic_attack_damage * 1.25)
 			Global.freeze(0.07, 0.02)
 		else:
 			Global.freeze(0.05, 0.02)
- 
-	body.take_damage(damage)
+	var direction = global_position.direction_to(body.global_position)
+	var force = direction * knockback_force
+	body.take_damage(damage, force)
  
 func _on_hitbox_timer_timeout() -> void:
 	sword_area.monitoring = false
