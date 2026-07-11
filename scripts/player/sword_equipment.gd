@@ -102,25 +102,25 @@ func basic_attack() -> void:
 	combo_timer.stop()
  
 	Global.on_windup = true
-	windup_timer.start(0.1)
+	windup_timer.start()
 	await windup_timer.timeout
  
 	Global.on_windup = false
 	hit_enemies.clear()
 	Global.is_attacking = true
 	on_cooldown = true
-	cooldown_timer.start(0.4)
+	cooldown_timer.start()
  
 	basic_sword_hitbox.disabled = false
 	heavy_sword_hitbox.disabled = true
 	light_sword_hitbox.disabled = true
  
 	sword_area.monitoring = true
-	hitbox_timer.start(0.08)
+	hitbox_timer.start()
 	call_deferred("_check_initial_overlaps")
  
 	combo_step = 1 - combo_step
-	combo_timer.start(0.5)
+	combo_timer.start()
 	combo_ready = true
  
 func light_attack() -> void:

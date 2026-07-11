@@ -25,22 +25,22 @@ disabled = true
 
 [node name="hitbox_timer" type="Timer" parent="." unique_id=588127811]
 process_callback = 0
-wait_time = 0.1
+wait_time = 0.08
 one_shot = true
 
 [node name="cooldown_timer" type="Timer" parent="." unique_id=1566083565]
 process_callback = 0
-wait_time = 0.3
+wait_time = 0.4
 one_shot = true
 
 [node name="windup_timer" type="Timer" parent="." unique_id=349641787]
 process_callback = 0
-wait_time = 0.9
+wait_time = 0.1
 one_shot = true
 
 [node name="combo_timer" type="Timer" parent="." unique_id=841078747]
 process_callback = 0
-wait_time = 0.5
+wait_time = 0.6
 one_shot = true
 
 [connection signal="body_entered" from="sword_area" to="." method="_on_sword_area_body_entered"]

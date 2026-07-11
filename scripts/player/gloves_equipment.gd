@@ -28,8 +28,8 @@ var hit_enemies: Array = []
 @export var light_attack_damage: int = 15
 @export var heavy_attack_damage: int = 30
 
-@export var basic_knockback: float = 50.0
-@export var light_knockback: float = 25.0
+@export var basic_knockback: float = 30.0
+@export var light_knockback: float = 10.0
 @export var heavy_knockback: float = 0.0
 #endregion
 
@@ -92,41 +92,52 @@ func basic_attack() -> void:
 	await windup_timer.timeout
  
 	Global.on_windup = false
+	if Global.cancelled_attack:
+		return
+
 	hit_enemies.clear()
 	Global.is_attacking = true
 	on_cooldown = true
-	cooldown_timer.start(0.4)
- 
+	
+	if combo_step == 2:
+		cooldown_timer.start(0.8)
+	else:
+		cooldown_timer.start() 
+	
 	basic_gloves_hitbox.disabled = false
 	heavy_gloves_hitbox.disabled = true
 	light_gloves_hitbox.disabled = true
- 
+	
 	gloves_area.monitoring = true
 	hitbox_timer.start(0.08)
 	call_deferred("_check_initial_overlaps")
- 
-	combo_step = 1 - combo_step
-	combo_timer.start(0.5)
-	combo_ready = true
- 
+	
+	combo_step = (combo_step + 1) % 3
+	
+	if combo_step != 0:
+		combo_timer.start() 
+		combo_ready = true
+	else:
+		combo_ready = false 
+
 func light_attack() -> void:
 	hit_enemies.clear()
 	Global.is_attacking = true
 	on_cooldown = true
-	cooldown_timer.start(0.25)
+	cooldown_timer.start(0.2)
  
 	basic_gloves_hitbox.disabled = true
 	heavy_gloves_hitbox.disabled = true
 	light_gloves_hitbox.disabled = false
  
 	gloves_area.monitoring = true
-	hitbox_timer.start(0.05)
+	hitbox_timer.start(0.06)
 	call_deferred("_check_initial_overlaps")
  
 func heavy_attack() -> void:
 	Global.cancelled_attack = false
 	Global.on_windup = true
-	windup_timer.start(0.5)
+	windup_timer.start(0.2)
 	Global.freeze(0.01, 0.90)
 	await windup_timer.timeout
 	
@@ -136,7 +147,7 @@ func heavy_attack() -> void:
 	hit_enemies.clear()
 	Global.is_attacking = true
 	on_cooldown = true
-	cooldown_timer.start(0.6)
+	cooldown_timer.start(2.0)
  
 	basic_gloves_hitbox.disabled = true
 	heavy_gloves_hitbox.disabled = false

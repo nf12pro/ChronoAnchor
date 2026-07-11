@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://8hh2gqh4pmhm"]
 
-[ext_resource type="Script" uid="uid://4q0crsc2o25v" path="res://scripts/player/player_sword.gd" id="1_63hfo"]
+[ext_resource type="Script" uid="uid://nwim1xkooryl" path="res://scripts/player/player_gloves.gd" id="1_63hfo"]
 [ext_resource type="PackedScene" uid="uid://b7weh1oqtsr78" path="res://scenes/systems/health_bar.tscn" id="2_dq2cg"]
 [ext_resource type="Texture2D" uid="uid://bxkwp55wasp7b" path="res://assets/prototype_dash_fragment.png" id="3_x7xud"]
 [ext_resource type="Texture2D" uid="uid://c1btvnms7f7yy" path="res://assets/prototype_save_state.png" id="4_08i2t"]
 [ext_resource type="Texture2D" uid="uid://cyx23xojcaqrv" path="res://assets/prototype_player_default_animation.png" id="5_lvxh1"]
-[ext_resource type="PackedScene" uid="uid://bbkit7y8fwlse" path="res://scenes/player/sword_equipment.tscn" id="6_y1ovr"]
+[ext_resource type="PackedScene" uid="uid://bj0y75mf47siw" path="res://scenes/player/gloves_equipment.tscn" id="6_63hfo"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
 atlas = ExtResource("5_lvxh1")
@@ -35,7 +35,7 @@ size = Vector2(32, 58)
 [sub_resource type="CircleShape2D" id="CircleShape2D_6esg4"]
 radius = 48.166378
 
-[node name="player_sword" type="CharacterBody2D" unique_id=142865822]
+[node name="player_gloves" type="CharacterBody2D" unique_id=142865822]
 z_index = 1
 collision_layer = 8
 collision_mask = 196
@@ -119,7 +119,7 @@ collision_mask = 64
 shape = SubResource("CircleShape2D_6esg4")
 disabled = true
 
-[node name="sword_equipment" parent="parry_area" unique_id=1586162383 instance=ExtResource("6_y1ovr")]
+[node name="gloves_equipment" parent="." unique_id=1586162383 instance=ExtResource("6_63hfo")]
 
 [node name="health_timer" type="Timer" parent="." unique_id=899907336]
 process_callback = 0
