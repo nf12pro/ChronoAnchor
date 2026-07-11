@@ -30,6 +30,9 @@ scale = Vector2(1, 1.25)
 shape = SubResource("RectangleShape2D_6esg4")
 disabled = true
 
+[node name="hold_point" type="Marker2D" parent="." unique_id=1515784187]
+position = Vector2(47, 0)
+
 [node name="hitbox_timer" type="Timer" parent="." unique_id=588127811]
 process_callback = 0
 wait_time = 0.05

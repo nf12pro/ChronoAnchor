@@ -51,6 +51,10 @@ var is_attacking: bool = false
 var hit_player: bool = false
 #endregion
 
+#region Grabbing
+var is_grabbed: bool = false
+#endregion
+
 func _ready():
 	health = max_health
 	health_bar.init_health(health)
@@ -63,6 +67,9 @@ func _ready():
 	add_child(soft_collision)
 
 func _physics_process(_delta: float) -> void:
+	if is_grabbed:
+		return
+	
 	var target_velocity = Vector2.ZERO
 	
 	if player:
@@ -158,4 +165,6 @@ func _on_stagger_timer_timeout() -> void:
 	stagger = false
 
 func grabbed() -> void:
-	pass
+	is_grabbed = true
+	knockback_velocity = Vector2.ZERO
+	velocity = Vector2.ZERO

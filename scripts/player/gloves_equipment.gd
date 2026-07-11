@@ -15,7 +15,7 @@ var on_cooldown: bool = false
 @onready var light_gloves_hitbox = $gloves_area/light_gloves_hitbox
 #endregion
 
-#region gloves Attacks
+#region Gloves Attacks
 var basic_gloves_attack: bool = false
 var heavy_gloves_attack: bool = false
 var light_gloves_attack: bool = false
@@ -39,6 +39,13 @@ var combo_ready: bool = false
 @onready var combo_timer = $combo_timer
 #endregion
 
+#region Grabbing Mechanic
+@onready var hold_point = $hold_point
+
+@onready var held_enemy: CharacterBody2D = null
+var is_holding: bool = false
+#endregion
+
 func _ready() -> void:
 	gloves_area.monitoring = false
 	basic_gloves_hitbox.disabled = true
@@ -48,9 +55,12 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if Global.is_attacking or Global.on_windup:
 		return 
+	if is_holding and held_enemy != null:
+		held_enemy.global_position = hold_point.global_position
+	
 	var mouse_position = get_global_mouse_position() 
 	global_rotation = (mouse_position - global_position).angle()
- 
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("basic_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
 		basic_gloves_attack = false
@@ -86,15 +96,15 @@ func _unhandled_input(event: InputEvent) -> void:
 func basic_attack() -> void:
 	combo_ready = false
 	combo_timer.stop()
- 
+	 
 	Global.on_windup = true
 	windup_timer.start(0.1)
 	await windup_timer.timeout
- 
+	 
 	Global.on_windup = false
 	if Global.cancelled_attack:
 		return
-
+	
 	hit_enemies.clear()
 	Global.is_attacking = true
 	on_cooldown = true
@@ -125,11 +135,11 @@ func light_attack() -> void:
 	Global.is_attacking = true
 	on_cooldown = true
 	cooldown_timer.start(0.2)
- 
+	 
 	basic_gloves_hitbox.disabled = true
 	heavy_gloves_hitbox.disabled = true
 	light_gloves_hitbox.disabled = false
- 
+	 
 	gloves_area.monitoring = true
 	hitbox_timer.start(0.06)
 	call_deferred("_check_initial_overlaps")
@@ -143,16 +153,16 @@ func heavy_attack() -> void:
 	
 	if Global.cancelled_attack:
 		return
- 
+	
 	hit_enemies.clear()
 	Global.is_attacking = true
 	on_cooldown = true
 	cooldown_timer.start(2.0)
- 
+	
 	basic_gloves_hitbox.disabled = true
 	heavy_gloves_hitbox.disabled = false
 	light_gloves_hitbox.disabled = true
- 
+	
 	gloves_area.monitoring = true
 	hitbox_timer.start(0.12)
 	call_deferred("_check_initial_overlaps")
@@ -173,6 +183,7 @@ func _on_gloves_area_body_entered(body: Node) -> void:
 	hit_enemies.append(body)
 	var damage := basic_attack_damage
 	var knockback_force := basic_knockback
+	
 	if light_gloves_attack: 
 		damage = light_attack_damage
 		knockback_force = light_knockback
@@ -181,6 +192,13 @@ func _on_gloves_area_body_entered(body: Node) -> void:
 		damage = heavy_attack_damage
 		knockback_force = heavy_knockback
 		Global.freeze(0.10, 0.01)
+		
+		if not is_holding and body is CharacterBody2D:
+			held_enemy = body
+			is_holding = true
+			if held_enemy.has_method("grabbed"):
+				held_enemy.grabbed()
+		
 	else:
 		damage = basic_attack_damage
 		knockback_force = basic_knockback
@@ -194,6 +212,7 @@ func _on_gloves_area_body_entered(body: Node) -> void:
 			Global.freeze(0.05, 0.05)
 		else:
 			Global.freeze(0.035, 0.02)
+			
 	var direction = global_position.direction_to(body.global_position)
 	var force = direction * knockback_force
 	body.take_damage(damage, force)
