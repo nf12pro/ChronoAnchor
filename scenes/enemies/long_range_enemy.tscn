@@ -35,6 +35,9 @@ radius = 440.0182
 [sub_resource type="CircleShape2D" id="CircleShape2D_yorin"]
 radius = 331.26727
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_hv2ic"]
+radius = 157.5373
+
 [node name="long_range_enemy" type="CharacterBody2D" unique_id=142865822]
 collision_layer = 16
 collision_mask = 2
@@ -61,7 +64,7 @@ grow_vertical = 0
 
 [node name="detection_range" type="Area2D" parent="." unique_id=33275608]
 collision_layer = 4
-collision_mask = 10
+collision_mask = 8
 
 [node name="detection_hitbox" type="CollisionShape2D" parent="detection_range" unique_id=1594368415]
 shape = SubResource("CircleShape2D_6esg4")
@@ -70,8 +73,15 @@ shape = SubResource("CircleShape2D_6esg4")
 collision_layer = 4
 collision_mask = 8
 
-[node name="attack_range_hitbox" type="CollisionShape2D" parent="attack_range" unique_id=1423636057]
+[node name="attack_hitbox" type="CollisionShape2D" parent="attack_range" unique_id=1423636057]
 shape = SubResource("CircleShape2D_yorin")
+
+[node name="too_close_range" type="Area2D" parent="." unique_id=833855971]
+collision_layer = 4
+collision_mask = 8
+
+[node name="too_close_hitbox" type="CollisionShape2D" parent="too_close_range" unique_id=1207604013]
+shape = SubResource("CircleShape2D_hv2ic")
 
 [node name="cooldown_timer" type="Timer" parent="." unique_id=1280477401]
 process_callback = 0
