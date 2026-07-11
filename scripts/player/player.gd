@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+@onready var sword_equipment = $sword_equipment
+
 #region Movement
 @export var max_speed: float = 200.0
 @export var acceleration: float = 1200.0
@@ -54,10 +56,9 @@ var last_move_direction: Vector2 = Vector2.DOWN
 signal dash_finished
 #endregion
 
-@onready var sword_equipment = $sword_equipment
-
 #region Save State
 @onready var save_state_tracker = $save_state_tracker
+@onready var save_state_rewind_timer = $save_state_rewind_timer
 
 const save_state_sprite = preload("res://scenes/player/save_state_sprite_loading.tscn")
 
@@ -69,6 +70,8 @@ var save_state_x_location: Array = []
 var save_state_y_location: Array = []
 
 var save_state_nodes: Array = []
+
+var save_state_rewinded: bool = false
 #endregion
 
 #region Parry
@@ -189,11 +192,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("place_save_state") and save_state_placed < save_state_max_amount:
 		place_save_state()
 	if event.is_action_pressed("rewind_to_save_state") and save_state_placed > 0:
+		save_state_rewinded = true
 		rewind_to_save_state()
 	if event.is_action_pressed("parry") and not Global.is_dashing and not Global.is_attacking and not parry_on_cooldown and not is_parrying:
 		parry()
 
 func place_save_state() -> void:
+	save_state_rewind_timer.start()
 	save_state_placed += 1
 	save_state_dash_charges.append(dash_charges)
 	save_state_health.append(health)
@@ -286,3 +291,9 @@ func _on_parry_timer_timeout() -> void:
 
 func _on_parry_cooldown_timer_timeout() -> void:
 	parry_on_cooldown = false
+
+func _on_save_state_rewind_timer_timeout() -> void:
+	if save_state_rewinded:
+		save_state_rewinded = false
+		return
+	rewind_to_save_state()
