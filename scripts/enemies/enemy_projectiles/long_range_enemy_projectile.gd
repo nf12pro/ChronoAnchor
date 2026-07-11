@@ -14,4 +14,4 @@ func _on_body_entered(body: Node) -> void:
 	queue_free()
 
 func parried() -> void:
-	pass
+	pass #Placeholder I need to make projectile go back to enemy that launched it

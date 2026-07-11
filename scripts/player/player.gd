@@ -251,18 +251,17 @@ func _check_initial_overlaps() -> void:
 	await get_tree().physics_frame
 	if not parry_area.monitoring:
 		return
-	for body in parry_area.get_overlapping_bodies():
-		_on_parry_area_body_entered(body)
+	for area in parry_area.get_overlapping_areas():
+		_on_parry_area_area_entered(area)
 
-func _on_parry_area_body_entered(body: Node) -> void:
-	if body in parried_objects:
+func _on_parry_area_area_entered(area: Area2D) -> void:
+	if area in parried_objects:
+		return
+	if not area.has_method("parried"):
 		return
 	
-	if not body.has_method("parried"):
-		return
-	
-	parried_objects.append(body)
-	body.parried()
+	parried_objects.append(area)
+	area.parried()
 
 func _on_health_depleted() -> void:
 	print("Player died")
@@ -278,3 +277,12 @@ func _on_dash_timer_timeout() -> void:
 
 func _on_damage_invincible_timer_timeout() -> void:
 	damage_invincible = false
+
+func _on_parry_timer_timeout() -> void:
+	parry_area.monitoring = false
+	parry_hitbox.disabled = true
+	is_parrying = false
+	parry_cooldown_timer.start()
+
+func _on_parry_cooldown_timer_timeout() -> void:
+	parry_on_cooldown = false

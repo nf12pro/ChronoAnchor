@@ -142,11 +142,14 @@ one_shot = true
 
 [node name="parry_cooldown_timer" type="Timer" parent="." unique_id=751223214]
 process_callback = 0
+wait_time = 0.3
 one_shot = true
 
 [node name="camera_2d" type="Camera2D" parent="." unique_id=843484154]
 
-[connection signal="body_entered" from="parry_area" to="." method="_on_parry_area_body_entered"]
+[connection signal="area_entered" from="parry_area" to="." method="_on_parry_area_area_entered"]
 [connection signal="timeout" from="health_timer" to="." method="_on_health_timer_timeout"]
 [connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]
 [connection signal="timeout" from="damage_invincible_timer" to="." method="_on_damage_invincible_timer_timeout"]
+[connection signal="timeout" from="parry_timer" to="." method="_on_parry_timer_timeout"]
+[connection signal="timeout" from="parry_cooldown_timer" to="." method="_on_parry_cooldown_timer_timeout"]
