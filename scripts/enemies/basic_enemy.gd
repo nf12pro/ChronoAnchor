@@ -22,8 +22,8 @@ var invincibility: bool = false
 
 #region Health
 @onready var health_bar = $health_bar
-@export var max_health: float = 100
-var health: float = 100 : set = set_health
+@export var max_health: float = 500
+var health: float = 500 : set = set_health
 #endregion
 
 #region Stagger
@@ -84,19 +84,19 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
 func _on_detection_range_body_entered(body: Node2D) -> void:
-	if body.name == "player":
+	if body.name == "player_sword" or "player_gloves":
 		player = body
 
 func _on_detection_range_body_exited(body: Node2D) -> void:
-	if body.name == "player":
+	if body.name == "player_sword" or "player_gloves":
 		player = null
 
 func _on_attack_range_body_entered(body: Node2D) -> void:
-	if body.name == "player":
+	if body.name == "player_sword" or "player_gloves":
 		in_attack_range = true
 
 func _on_attack_range_body_exited(body: Node2D) -> void:
-	if body.name == "player":
+	if body.name == "player_sword" or "player_gloves":
 		in_attack_range = false
 
 func attack() -> void:
@@ -156,3 +156,6 @@ func _on_health_depleted() -> void:
 
 func _on_stagger_timer_timeout() -> void:
 	stagger = false
+
+func grabbed() -> void:
+	pass

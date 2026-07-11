@@ -66,13 +66,13 @@ func _ready():
 func _check_initial_overlaps() -> void:
 	await get_tree().physics_frame
 	for body in detection_range.get_overlapping_bodies():
-		if body.name == "player":
+		if body.name == "player_sword" or "player_gloves":
 			player = body
 	for body in attack_range.get_overlapping_bodies():
-		if body.name == "player":
+		if body.name == "player_sword" or "player_gloves":
 			in_attack_range = true
 	for body in too_close_range.get_overlapping_bodies():
-		if body.name == "player":
+		if body.name == "player_sword" or "player_gloves":
 			too_close = true
 
 func _physics_process(_delta: float) -> void:
@@ -101,27 +101,27 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
 func _on_detection_range_body_entered(body: Node2D) -> void:
-	if body.name == "player":
+	if body.name == "player_sword" or "player_gloves":
 		player = body
 
 func _on_detection_range_body_exited(body: Node2D) -> void:
-	if body.name == "player":
+	if body.name == "player_sword" or "player_gloves":
 		player = null
 
 func _on_attack_range_body_entered(body: Node2D) -> void:
-	if body.name == "player":
+	if body.name == "player_sword" or "player_gloves":
 		in_attack_range = true
 
 func _on_attack_range_body_exited(body: Node2D) -> void:
-	if body.name == "player":
+	if body.name == "player_sword" or "player_gloves":
 		in_attack_range = false
 
 func _on_too_close_range_body_entered(body: Node2D) -> void:
-	if body.name == "player":
+	if body.name == "player_sword" or "player_gloves":
 		too_close = true
 
 func _on_too_close_range_body_exited(body: Node2D) -> void:
-	if body.name == "player":
+	if body.name == "player_sword" or "player_gloves":
 		too_close = false
 
 func attack() -> void:

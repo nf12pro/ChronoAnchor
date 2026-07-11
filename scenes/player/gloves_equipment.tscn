@@ -3,24 +3,31 @@
 [ext_resource type="Script" uid="uid://cujoxxn7nprla" path="res://scripts/player/gloves_equipment.gd" id="1_n0v3q"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6esg4"]
-size = Vector2(73, 20)
+size = Vector2(80.25, 27)
 
 [node name="gloves_equipment" type="Node2D" unique_id=1586162383]
 script = ExtResource("1_n0v3q")
 
-[node name="sword_area" type="Area2D" parent="." unique_id=1393820661]
+[node name="gloves_area" type="Area2D" parent="." unique_id=1393820661]
 collision_layer = 2
 collision_mask = 16
 
-[node name="heavy_sword_hitbox" type="CollisionPolygon2D" parent="sword_area" unique_id=891468724]
-
-[node name="light_sword_hitbox" type="CollisionShape2D" parent="sword_area" unique_id=970164624]
-position = Vector2(36.5, 0)
+[node name="heavy_gloves_hitbox" type="CollisionShape2D" parent="gloves_area" unique_id=972961817]
+position = Vector2(44, 0)
+scale = Vector2(1.1, 2.1875)
 shape = SubResource("RectangleShape2D_6esg4")
 disabled = true
 
-[node name="basic_sword_hitbox" type="CollisionPolygon2D" parent="sword_area" unique_id=1195310844]
-polygon = PackedVector2Array(112, -80, 112, 80, 0, 0)
+[node name="light_gloves_hitbox" type="CollisionShape2D" parent="gloves_area" unique_id=184773899]
+position = Vector2(20, 0)
+scale = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_6esg4")
+disabled = true
+
+[node name="basic_gloves_hitbox" type="CollisionShape2D" parent="gloves_area" unique_id=970164624]
+position = Vector2(40, 0)
+scale = Vector2(1, 1.25)
+shape = SubResource("RectangleShape2D_6esg4")
 disabled = true
 
 [node name="hitbox_timer" type="Timer" parent="." unique_id=588127811]
@@ -30,10 +37,12 @@ one_shot = true
 
 [node name="cooldown_timer" type="Timer" parent="." unique_id=1566083565]
 process_callback = 0
-wait_time = 0.3
+wait_time = 0.2
 one_shot = true
 
 [node name="windup_timer" type="Timer" parent="." unique_id=349641787]
+process_callback = 0
+wait_time = 0.55
 one_shot = true
 
 [node name="combo_timer" type="Timer" parent="." unique_id=841078747]
@@ -41,7 +50,7 @@ process_callback = 0
 wait_time = 0.5
 one_shot = true
 
-[connection signal="body_entered" from="sword_area" to="." method="_on_sword_area_body_entered"]
+[connection signal="body_entered" from="gloves_area" to="." method="_on_gloves_area_body_entered"]
 [connection signal="timeout" from="hitbox_timer" to="." method="_on_hitbox_timer_timeout"]
 [connection signal="timeout" from="cooldown_timer" to="." method="_on_cooldown_timer_timeout"]
 [connection signal="timeout" from="windup_timer" to="." method="_on_windup_timer_timeout"]

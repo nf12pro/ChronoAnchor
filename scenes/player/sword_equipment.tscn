@@ -25,7 +25,7 @@ disabled = true
 
 [node name="hitbox_timer" type="Timer" parent="." unique_id=588127811]
 process_callback = 0
-wait_time = 0.05
+wait_time = 0.1
 one_shot = true
 
 [node name="cooldown_timer" type="Timer" parent="." unique_id=1566083565]
@@ -34,6 +34,8 @@ wait_time = 0.3
 one_shot = true
 
 [node name="windup_timer" type="Timer" parent="." unique_id=349641787]
+process_callback = 0
+wait_time = 0.9
 one_shot = true
 
 [node name="combo_timer" type="Timer" parent="." unique_id=841078747]

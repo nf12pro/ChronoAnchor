@@ -35,7 +35,7 @@ var hit_enemies: Array = []
 
 @export var basic_knockback: float = 150.0
 @export var light_knockback: float = 100.0
-@export var heavy_knockback: float = 600.0
+@export var heavy_knockback: float = 300.0
 #endregion
 
 #region Combo

@@ -1,7 +1,7 @@
 extends Node2D
 
-#region Sword Timer
-@onready var sword_area = $sword_area
+#region gloves Timer
+@onready var gloves_area = $gloves_area
 @onready var hitbox_timer = $hitbox_timer
 @onready var cooldown_timer = $cooldown_timer
 @onready var windup_timer = $windup_timer
@@ -9,29 +9,28 @@ extends Node2D
 var on_cooldown: bool = false
 #endregion
 
-#region Semi-Circle Genration
-@export var radius: float = 120.0
-@export var segments: int = 16
+#region Gloves Hitbox
+@onready var basic_gloves_hitbox = $gloves_area/basic_gloves_hitbox
+@onready var heavy_gloves_hitbox = $gloves_area/heavy_gloves_hitbox
+@onready var light_gloves_hitbox = $gloves_area/light_gloves_hitbox
 #endregion
 
-#region Sword Hitbox
-@onready var basic_sword_hitbox = $sword_area/basic_sword_hitbox
-@onready var heavy_sword_hitbox = $sword_area/heavy_sword_hitbox
-@onready var light_sword_hitbox = $sword_area/light_sword_hitbox
-#endregion
-
-#region Sword Attacks
-var basic_sword_attack: bool = false
-var heavy_sword_attack: bool = false
-var light_sword_attack: bool = false
+#region gloves Attacks
+var basic_gloves_attack: bool = false
+var heavy_gloves_attack: bool = false
+var light_gloves_attack: bool = false
 
 @onready var player = get_parent()
 
 var hit_enemies: Array = []
 
-var basic_attack_damage: int = 20
-var light_attack_damage: int = 10
-var heavy_attack_damage: int = 30
+@export var basic_attack_damage: int = 20
+@export var light_attack_damage: int = 15
+@export var heavy_attack_damage: int = 30
+
+@export var basic_knockback: float = 50.0
+@export var light_knockback: float = 25.0
+@export var heavy_knockback: float = 0.0
 #endregion
 
 #region Combo
@@ -41,19 +40,10 @@ var combo_ready: bool = false
 #endregion
 
 func _ready() -> void:
-	sword_area.monitoring = false
-	basic_sword_hitbox.disabled = true
-	heavy_sword_hitbox.disabled = true
-	light_sword_hitbox.disabled = true
-	generate_semi_circle()
- 
-func generate_semi_circle() -> void:
-	var points: PackedVector2Array = PackedVector2Array()
-	points.append(Vector2.ZERO)
-	for i in range(segments + 1):
-		var angle := deg_to_rad(-90.0 + (180.0 * i / segments))
-		points.append(Vector2(cos(angle) * radius, sin(angle) * radius))
-	heavy_sword_hitbox.polygon = points
+	gloves_area.monitoring = false
+	basic_gloves_hitbox.disabled = true
+	heavy_gloves_hitbox.disabled = true
+	light_gloves_hitbox.disabled = true
  
 func _process(_delta: float) -> void:
 	if Global.is_attacking or Global.on_windup:
@@ -63,31 +53,31 @@ func _process(_delta: float) -> void:
  
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("basic_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
-		basic_sword_attack = false
-		heavy_sword_attack = false
-		light_sword_attack = true
+		basic_gloves_attack = false
+		heavy_gloves_attack = false
+		light_gloves_attack = true
 		combo_ready = false
 		combo_step = 0
 		combo_timer.stop()
 		light_attack()
 	elif event.is_action_pressed("basic_attack") and hitbox_timer.is_stopped() and (not on_cooldown or combo_ready):
-		basic_sword_attack = true
-		heavy_sword_attack = false
-		light_sword_attack = false
+		basic_gloves_attack = true
+		heavy_gloves_attack = false
+		light_gloves_attack = false
 		basic_attack()
 	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
-		basic_sword_attack = false
-		heavy_sword_attack = true
-		light_sword_attack = false
+		basic_gloves_attack = false
+		heavy_gloves_attack = true
+		light_gloves_attack = false
 		combo_ready = false
 		combo_step = 0
 		combo_timer.stop()
 		await player.dash_finished
 		heavy_attack()
 	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and not on_cooldown:
-		basic_sword_attack = false
-		heavy_sword_attack = true
-		light_sword_attack = false
+		basic_gloves_attack = false
+		heavy_gloves_attack = true
+		light_gloves_attack = false
 		combo_ready = false
 		combo_step = 0
 		combo_timer.stop()
@@ -107,11 +97,11 @@ func basic_attack() -> void:
 	on_cooldown = true
 	cooldown_timer.start(0.4)
  
-	basic_sword_hitbox.disabled = false
-	heavy_sword_hitbox.disabled = true
-	light_sword_hitbox.disabled = true
+	basic_gloves_hitbox.disabled = false
+	heavy_gloves_hitbox.disabled = true
+	light_gloves_hitbox.disabled = true
  
-	sword_area.monitoring = true
+	gloves_area.monitoring = true
 	hitbox_timer.start(0.08)
 	call_deferred("_check_initial_overlaps")
  
@@ -125,11 +115,11 @@ func light_attack() -> void:
 	on_cooldown = true
 	cooldown_timer.start(0.25)
  
-	basic_sword_hitbox.disabled = true
-	heavy_sword_hitbox.disabled = true
-	light_sword_hitbox.disabled = false
+	basic_gloves_hitbox.disabled = true
+	heavy_gloves_hitbox.disabled = true
+	light_gloves_hitbox.disabled = false
  
-	sword_area.monitoring = true
+	gloves_area.monitoring = true
 	hitbox_timer.start(0.05)
 	call_deferred("_check_initial_overlaps")
  
@@ -148,22 +138,22 @@ func heavy_attack() -> void:
 	on_cooldown = true
 	cooldown_timer.start(0.6)
  
-	basic_sword_hitbox.disabled = true
-	heavy_sword_hitbox.disabled = false
-	light_sword_hitbox.disabled = true
+	basic_gloves_hitbox.disabled = true
+	heavy_gloves_hitbox.disabled = false
+	light_gloves_hitbox.disabled = true
  
-	sword_area.monitoring = true
+	gloves_area.monitoring = true
 	hitbox_timer.start(0.12)
 	call_deferred("_check_initial_overlaps")
  
 func _check_initial_overlaps() -> void:
 	await get_tree().physics_frame
-	if not sword_area.monitoring:
+	if not gloves_area.monitoring:
 		return
-	for body in sword_area.get_overlapping_bodies():
-		_on_sword_area_body_entered(body)
+	for body in gloves_area.get_overlapping_bodies():
+		_on_gloves_area_body_entered(body)
  
-func _on_sword_area_body_entered(body: Node) -> void:
+func _on_gloves_area_body_entered(body: Node) -> void:
 	if body in hit_enemies:
 		return
 	if not body.has_method("take_damage"):
@@ -171,31 +161,40 @@ func _on_sword_area_body_entered(body: Node) -> void:
  
 	hit_enemies.append(body)
 	var damage := basic_attack_damage
- 
-	if light_sword_attack:
+	var knockback_force := basic_knockback
+	if light_gloves_attack: 
 		damage = light_attack_damage
-		Global.freeze(0.035, 0.03)
-	elif heavy_sword_attack:
+		knockback_force = light_knockback
+		Global.freeze(0.035, 0.01)
+	elif heavy_gloves_attack:
 		damage = heavy_attack_damage
+		knockback_force = heavy_knockback
 		Global.freeze(0.10, 0.01)
 	else:
 		damage = basic_attack_damage
+		knockback_force = basic_knockback
 		if combo_step == 1:
+			knockback_force = basic_knockback * 1.25
 			damage = int(basic_attack_damage * 1.25)
-			Global.freeze(0.07, 0.02)
+			Global.freeze(0.02, 0.035)
+		elif combo_step == 2:
+			knockback_force = basic_knockback * 1.50
+			damage = int(basic_attack_damage * 1.50)
+			Global.freeze(0.05, 0.05)
 		else:
-			Global.freeze(0.05, 0.02)
- 
-	body.take_damage(damage)
+			Global.freeze(0.035, 0.02)
+	var direction = global_position.direction_to(body.global_position)
+	var force = direction * knockback_force
+	body.take_damage(damage, force)
  
 func _on_hitbox_timer_timeout() -> void:
-	sword_area.monitoring = false
-	basic_sword_hitbox.disabled = true
-	heavy_sword_hitbox.disabled = true
-	light_sword_hitbox.disabled = true
-	basic_sword_attack = false
-	heavy_sword_attack = false
-	light_sword_attack = false
+	gloves_area.monitoring = false
+	basic_gloves_hitbox.disabled = true
+	heavy_gloves_hitbox.disabled = true
+	light_gloves_hitbox.disabled = true
+	basic_gloves_attack = false
+	heavy_gloves_attack = false
+	light_gloves_attack = false
 	hit_enemies.clear()
 	Global.is_attacking = false
  
