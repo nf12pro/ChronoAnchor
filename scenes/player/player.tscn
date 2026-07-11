@@ -32,6 +32,9 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hv2ic"]
 size = Vector2(32, 58)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_6esg4"]
+radius = 48.166378
+
 [node name="player" type="CharacterBody2D" unique_id=142865822]
 z_index = 1
 collision_layer = 8
@@ -75,6 +78,10 @@ scroll_active = false
 horizontal_alignment = 1
 vertical_alignment = 2
 
+[node name="save_state_sprite" type="Sprite2D" parent="." unique_id=102639851]
+position = Vector2(146, 252)
+texture = ExtResource("5_tuyoq")
+
 [node name="save_state_tracker" type="RichTextLabel" parent="." unique_id=890747824]
 anchors_preset = -1
 anchor_left = 0.42000002
@@ -104,6 +111,16 @@ frame_progress = 0.12391861
 [node name="player_hurtbox" type="CollisionShape2D" parent="." unique_id=1128658469]
 shape = SubResource("RectangleShape2D_hv2ic")
 
+[node name="sword_equipment" parent="." unique_id=1586162383 instance=ExtResource("5_qlg0r")]
+
+[node name="parry_range" type="Area2D" parent="." unique_id=1018574559]
+collision_layer = 2
+collision_mask = 64
+
+[node name="collision_shape_2d" type="CollisionShape2D" parent="parry_range" unique_id=122239388]
+shape = SubResource("CircleShape2D_6esg4")
+disabled = true
+
 [node name="health_timer" type="Timer" parent="." unique_id=899907336]
 process_callback = 0
 wait_time = 0.2
@@ -118,13 +135,14 @@ process_callback = 0
 wait_time = 0.5
 one_shot = true
 
-[node name="sword_equipment" parent="." unique_id=1586162383 instance=ExtResource("5_qlg0r")]
+[node name="parry_timer" type="Timer" parent="." unique_id=1325194600]
+process_callback = 0
+wait_time = 0.15
+one_shot = true
+
+[node name="parry_cooldown_timer" type="Timer" parent="." unique_id=751223214]
 
 [node name="camera_2d" type="Camera2D" parent="." unique_id=843484154]
-
-[node name="save_state_sprite" type="Sprite2D" parent="." unique_id=102639851]
-position = Vector2(146, 252)
-texture = ExtResource("5_tuyoq")
 
 [connection signal="timeout" from="health_timer" to="." method="_on_health_timer_timeout"]
 [connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]

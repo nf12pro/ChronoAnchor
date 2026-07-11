@@ -71,6 +71,10 @@ var save_state_y_location: Array = []
 var save_state_nodes: Array = []
 #endregion
 
+#region Parry
+@onready var parry_timer = $parry_timer
+#endregion
+
 func _ready():
 	health = max_health
 	health_bar.init_health(health)

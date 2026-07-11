@@ -22,6 +22,10 @@ var stagger: bool = false
 #endregion
 
 #region Detection
+@onready var detection_range = $detection_range
+@onready var attack_range = $attack_range
+@onready var too_close_range = $too_close_range
+
 var player: CharacterBody2D = null
 var in_attack_range: bool = false
 var too_close: bool = false
@@ -35,7 +39,6 @@ var too_close: bool = false
 const Projectile = preload("res://scenes/enemies/enemy_projectiles/long_range_enemy_projectile.tscn")
 
 @export var dealing_damage: int = 10
-@export var windup_duration: float = 0.6
 @export var projectile_speed: float = 500.0
 @export var projectile_spawn_offset: float = 30.0
 
@@ -52,6 +55,20 @@ func _ready():
 	soft_collision = SoftCollision.new()
 	soft_collision.radius = 20.0
 	add_child(soft_collision)
+
+	call_deferred("_check_initial_overlaps")
+
+func _check_initial_overlaps() -> void:
+	await get_tree().physics_frame
+	for body in detection_range.get_overlapping_bodies():
+		if body.name == "player":
+			player = body
+	for body in attack_range.get_overlapping_bodies():
+		if body.name == "player":
+			in_attack_range = true
+	for body in too_close_range.get_overlapping_bodies():
+		if body.name == "player":
+			too_close = true
 
 func _physics_process(_delta: float) -> void:
 	if player and not is_winding_up:
@@ -107,7 +124,7 @@ func attack() -> void:
 	on_cooldown = true
 	velocity = Vector2.ZERO
 
-	windup_timer.start(windup_duration)
+	windup_timer.start()
 	await windup_timer.timeout
 
 	is_winding_up = false
@@ -122,6 +139,7 @@ func fire_projectile() -> void:
 	get_parent().add_child(projectile)
 	projectile.global_position = global_position + Vector2.RIGHT.rotated(rotation) * projectile_spawn_offset
 	projectile.rotation = rotation
+	projectile.direction = Vector2.RIGHT.rotated(rotation)
 	projectile.damage = dealing_damage
 	projectile.speed = projectile_speed
 

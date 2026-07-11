@@ -95,6 +95,7 @@ one_shot = true
 
 [node name="windup_timer" type="Timer" parent="." unique_id=2622098]
 process_callback = 0
+wait_time = 0.6
 one_shot = true
 
 [node name="hitbox_timer" type="Timer" parent="." unique_id=2007262019]
@@ -106,6 +107,8 @@ one_shot = true
 [connection signal="body_exited" from="detection_range" to="." method="_on_detection_range_body_exited"]
 [connection signal="body_entered" from="attack_range" to="." method="_on_attack_range_body_entered"]
 [connection signal="body_exited" from="attack_range" to="." method="_on_attack_range_body_exited"]
+[connection signal="body_entered" from="too_close_range" to="." method="_on_too_close_range_body_entered"]
+[connection signal="body_exited" from="too_close_range" to="." method="_on_too_close_range_body_exited"]
 [connection signal="timeout" from="cooldown_timer" to="." method="_on_cooldown_timer_timeout"]
 [connection signal="timeout" from="stagger_timer" to="." method="_on_stagger_timer_timeout"]
 [connection signal="timeout" from="hitbox_timer" to="." method="_on_hitbox_timer_timeout"]
