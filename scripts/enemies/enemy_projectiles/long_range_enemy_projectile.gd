@@ -4,6 +4,7 @@ extends Area2D
 @export var damage: int = 10
 
 var direction: Vector2 = Vector2.RIGHT
+var is_parried: bool = false
 
 func _physics_process(delta: float) -> void:
 	global_position += direction * speed * delta
@@ -14,4 +15,14 @@ func _on_body_entered(body: Node) -> void:
 	queue_free()
 
 func parried() -> void:
-	pass #Placeholder I need to make projectile go back to enemy that launched it
+	if is_parried:
+		return 
+
+	direction = -direction
+	speed *= 1.5 
+	
+	rotation += PI 
+	is_parried = true
+	
+	set_collision_mask_value(4, false) 
+	set_collision_mask_value(5, true)
