@@ -7,7 +7,7 @@ extends CharacterBody2D
 #endregion
 
 #region Soft Collision
-const SoftCollision = preload("res://scripts/soft_collision.gd")
+const SoftCollision = preload("res://scripts/systems/soft_collision.gd")
 var soft_collision: Area2D
 @export var soft_collision_strength: float = 150.0
 #endregion
@@ -59,7 +59,7 @@ signal dash_finished
 #region Save State
 @onready var save_state_tracker = $save_state_tracker
 
-const save_state_sprite = preload("res://scenes/save_state_sprite_loading.tscn")
+const save_state_sprite = preload("res://scenes/player/save_state_sprite_loading.tscn")
 
 @export var save_state_max_amount: int = 1
 var save_state_placed: int = 0

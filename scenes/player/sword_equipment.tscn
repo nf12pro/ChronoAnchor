@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bbkit7y8fwlse"]
 
-[ext_resource type="Script" uid="uid://du0fjnu8hff8g" path="res://scripts/sword_equipment.gd" id="1_lks1c"]
+[ext_resource type="Script" uid="uid://du0fjnu8hff8g" path="res://scripts/player/sword_equipment.gd" id="1_lks1c"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6esg4"]
 size = Vector2(73, 20)

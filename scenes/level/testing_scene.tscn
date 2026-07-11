@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dj2xqw6gl3p73"]
 
-[ext_resource type="PackedScene" uid="uid://bwiio5rwwi5dp" path="res://scenes/player.tscn" id="1_2j2p2"]
-[ext_resource type="PackedScene" uid="uid://oc4j4b2x48bv" path="res://scenes/basic_enemy.tscn" id="2_2j2p2"]
-[ext_resource type="PackedScene" uid="uid://c5rd8jllrhrex" path="res://scenes/long_range_enemy.tscn" id="3_v6rby"]
+[ext_resource type="PackedScene" uid="uid://bwiio5rwwi5dp" path="res://scenes/player/player.tscn" id="1_2j2p2"]
+[ext_resource type="PackedScene" uid="uid://oc4j4b2x48bv" path="res://scenes/enemies/basic_enemy.tscn" id="2_2j2p2"]
+[ext_resource type="PackedScene" uid="uid://c5rd8jllrhrex" path="res://scenes/enemies/long_range_enemy.tscn" id="3_v6rby"]
 
 [node name="testing_scene" type="Node2D" unique_id=1774393185]
 

@@ -5,7 +5,7 @@ extends CharacterBody2D
 #endregion
 
 #region Soft Collision
-const SoftCollision = preload("res://scripts/soft_collision.gd")
+const SoftCollision = preload("res://scripts/systems/soft_collision.gd")
 var soft_collision: Area2D
 @export var soft_collision_strength: float = 120.0
 #endregion
@@ -31,6 +31,8 @@ var in_attack_range: bool = false
 #endregion
 
 #region Dealing Damage
+@onready var enemy_area = $enemy_area
+@onready var enemy_hitbox = $enemy_area/enemy_hitbox
 @onready var cooldown_timer = $cooldown_timer
 @onready var windup_timer = $windup_timer
 @onready var hitbox_timer = $hitbox_timer
@@ -47,13 +49,14 @@ func _ready():
 	health = max_health
 	health_bar.init_health(health)
 	health_bar.health_depleted.connect(_on_health_depleted)
+	enemy_area.monitoring = false
+	enemy_hitbox.disabled = true
 	
 	soft_collision = SoftCollision.new()
 	soft_collision.radius = 20.0 
 	add_child(soft_collision)
 
 func _physics_process(_delta: float) -> void:
-	look_at(Global.player_global_position)
 	if player:
 		if not stagger and not is_attacking:
 			velocity = global_position.direction_to(player.global_position) * max_speed
@@ -94,14 +97,30 @@ func attack() -> void:
 
 	windup_timer.start()
 	await windup_timer.timeout
+
+	enemy_hitbox.disabled = false
+	enemy_area.monitoring = true
 	hitbox_timer.start()
 	call_deferred("_check_initial_overlaps")
 
 func _check_initial_overlaps() -> void:
 	await get_tree().physics_frame
-	return
+	if not enemy_area.monitoring:
+		return
+	for body in enemy_area.get_overlapping_bodies():
+		_on_enemy_area_body_entered(body)
+
+func _on_enemy_area_body_entered(body: Node) -> void:
+	if hit_player:
+		return
+	if not body.has_method("take_damage"):
+		return
+	hit_player = true
+	body.take_damage(dealing_damage)
 
 func _on_hitbox_timer_timeout() -> void:
+	enemy_hitbox.disabled = true
+	enemy_area.monitoring = false
 	is_attacking = false
 	cooldown_timer.start()
 

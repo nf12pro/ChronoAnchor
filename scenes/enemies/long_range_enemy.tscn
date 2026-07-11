@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://c5rd8jllrhrex"]
 
-[ext_resource type="Script" uid="uid://bdyi7igjfolm0" path="res://scripts/long_range_enemy.gd" id="1_78btl"]
+[ext_resource type="Script" uid="uid://bdyi7igjfolm0" path="res://scripts/enemies/long_range_enemy.gd" id="1_78btl"]
 [ext_resource type="Texture2D" uid="uid://cyx23xojcaqrv" path="res://assets/prototype_player_default_animation.png" id="2_brokm"]
-[ext_resource type="PackedScene" uid="uid://b7weh1oqtsr78" path="res://scenes/health_bar.tscn" id="3_o57mj"]
+[ext_resource type="PackedScene" uid="uid://b7weh1oqtsr78" path="res://scenes/systems/health_bar.tscn" id="3_o57mj"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
 atlas = ExtResource("2_brokm")

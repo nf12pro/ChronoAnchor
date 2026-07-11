@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://bwiio5rwwi5dp"]
 
 [ext_resource type="Texture2D" uid="uid://cyx23xojcaqrv" path="res://assets/prototype_player_default_animation.png" id="1_3vyb7"]
-[ext_resource type="Script" uid="uid://4q0crsc2o25v" path="res://scripts/player.gd" id="1_g2els"]
-[ext_resource type="PackedScene" uid="uid://b7weh1oqtsr78" path="res://scenes/health_bar.tscn" id="3_qhqgy"]
+[ext_resource type="Script" uid="uid://4q0crsc2o25v" path="res://scripts/player/player.gd" id="1_g2els"]
+[ext_resource type="PackedScene" uid="uid://b7weh1oqtsr78" path="res://scenes/systems/health_bar.tscn" id="3_qhqgy"]
 [ext_resource type="Texture2D" uid="uid://bxkwp55wasp7b" path="res://assets/prototype_dash_fragment.png" id="4_dqkch"]
-[ext_resource type="PackedScene" uid="uid://bbkit7y8fwlse" path="res://scenes/sword_equipment.tscn" id="5_qlg0r"]
+[ext_resource type="PackedScene" uid="uid://bbkit7y8fwlse" path="res://scenes/player/sword_equipment.tscn" id="5_qlg0r"]
 [ext_resource type="Texture2D" uid="uid://c1btvnms7f7yy" path="res://assets/prototype_save_state.png" id="5_tuyoq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
