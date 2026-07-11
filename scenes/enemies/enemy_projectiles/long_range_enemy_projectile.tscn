@@ -8,7 +8,7 @@ size = Vector2(30, 26)
 
 [node name="long_range_enemy_projectile" type="Area2D" unique_id=2126754162]
 collision_layer = 64
-collision_mask = 8
+collision_mask = 136
 script = ExtResource("1_4snv1")
 
 [node name="hitbox" type="CollisionShape2D" parent="." unique_id=270875432]

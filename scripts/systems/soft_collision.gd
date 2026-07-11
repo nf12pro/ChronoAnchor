@@ -16,7 +16,6 @@ func is_overlapping() -> bool:
 func get_push_vector() -> Vector2:
 	var areas = get_overlapping_areas()
 	var push_vector = Vector2.ZERO
-	
 	if areas.size() > 0:
 		for area in areas:
 			var direction = area.global_position.direction_to(global_position)

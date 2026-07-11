@@ -10,10 +10,6 @@ var soft_collision: Area2D
 @export var soft_collision_strength: float = 120.0
 #endregion
 
-#region Invincibility
-var invincibility: bool = false
-#endregion
-
 #region Health
 @onready var health_bar = $health_bar
 @export var max_health: float = 100
@@ -28,47 +24,57 @@ var stagger: bool = false
 #region Detection
 var player: CharacterBody2D = null
 var in_attack_range: bool = false
+var too_close: bool = false
 #endregion
 
-#region Dealing Damage
+#region Ranged Attack
 @onready var cooldown_timer = $cooldown_timer
 @onready var windup_timer = $windup_timer
 @onready var hitbox_timer = $hitbox_timer
 
+const Projectile = preload("res://scenes/enemies/enemy_projectiles/long_range_enemy_projectile.tscn")
+
 @export var dealing_damage: int = 10
-@export var attack_duration: float = 0.15
+@export var windup_duration: float = 0.6
+@export var projectile_speed: float = 500.0
+@export var projectile_spawn_offset: float = 30.0
 
 var on_cooldown: bool = false
 var is_attacking: bool = false
-var hit_player: bool = false
+var is_winding_up: bool = false
 #endregion
 
 func _ready():
 	health = max_health
 	health_bar.init_health(health)
 	health_bar.health_depleted.connect(_on_health_depleted)
-	
+
 	soft_collision = SoftCollision.new()
-	soft_collision.radius = 20.0 
+	soft_collision.radius = 20.0
 	add_child(soft_collision)
 
 func _physics_process(_delta: float) -> void:
-	look_at(Global.player_global_position)
-	if player:
-		if not stagger and not is_attacking:
+	if player and not is_winding_up:
+		look_at(player.global_position)
+
+	if player and not stagger and not is_attacking:
+		if too_close:
+			velocity = player.global_position.direction_to(global_position) * max_speed
+		elif not in_attack_range:
 			velocity = global_position.direction_to(player.global_position) * max_speed
 		else:
 			velocity = Vector2.ZERO
-		if in_attack_range and not on_cooldown and not stagger and not is_attacking:
-			attack()
 	else:
 		velocity = Vector2.ZERO
-	invincibility = false
+
+	if player and in_attack_range and not on_cooldown and not stagger and not is_attacking:
+		attack()
+
 	velocity = velocity.limit_length(max_speed)
-	
+
 	if soft_collision and soft_collision.is_overlapping():
 		velocity += soft_collision.get_push_vector() * soft_collision_strength
-		
+
 	move_and_slide()
 
 func _on_detection_range_body_entered(body: Node2D) -> void:
@@ -87,19 +93,37 @@ func _on_attack_range_body_exited(body: Node2D) -> void:
 	if body.name == "player":
 		in_attack_range = false
 
+func _on_too_close_range_body_entered(body: Node2D) -> void:
+	if body.name == "player":
+		too_close = true
+
+func _on_too_close_range_body_exited(body: Node2D) -> void:
+	if body.name == "player":
+		too_close = false
+
 func attack() -> void:
 	is_attacking = true
+	is_winding_up = true
 	on_cooldown = true
-	hit_player = false
+	velocity = Vector2.ZERO
 
-	windup_timer.start()
+	windup_timer.start(windup_duration)
 	await windup_timer.timeout
-	hitbox_timer.start()
-	call_deferred("_check_initial_overlaps")
 
-func _check_initial_overlaps() -> void:
-	await get_tree().physics_frame
-	return
+	is_winding_up = false
+
+	if not stagger:
+		fire_projectile()
+
+	hitbox_timer.start()
+
+func fire_projectile() -> void:
+	var projectile = Projectile.instantiate()
+	get_parent().add_child(projectile)
+	projectile.global_position = global_position + Vector2.RIGHT.rotated(rotation) * projectile_spawn_offset
+	projectile.rotation = rotation
+	projectile.damage = dealing_damage
+	projectile.speed = projectile_speed
 
 func _on_hitbox_timer_timeout() -> void:
 	is_attacking = false

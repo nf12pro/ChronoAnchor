@@ -1,32 +1,17 @@
 extends Area2D
 
-#region Movement
-@export var max_speed: float = 25.0
-#endregion
+@export var speed: float = 500.0
+@export var damage: int = 10
 
-#region Dealing Damage
-@onready var enemy_area = $enemy_area
-@onready var enemy_hitbox = $enemy_area/enemy_hitbox
-@onready var cooldown_timer = $cooldown_timer
-@onready var windup_timer = $windup_timer
-@onready var hitbox_timer = $hitbox_timer
+var direction: Vector2 = Vector2.RIGHT
 
-@export var dealing_damage: int = 10
-@export var attack_duration: float = 0.15
+func _ready() -> void:
+	direction = Vector2.RIGHT.rotated(rotation)
 
-var on_cooldown: bool = false
-var is_attacking: bool = false
-var hit_player: bool = false
-#endregion
+func _physics_process(delta: float) -> void:
+	global_position += direction * speed * delta
 
-func _ready():
-	enemy_area.monitoring = false
-	enemy_hitbox.disabled = true
-
-func _physics_process(_delta: float) -> void:
-	pass
-
-func _on_body_entered(body) -> void:
-	if body.name == "player":
-		body.take_damage(dealing_damage)
-		self.queue_free()
+func _on_body_entered(body: Node) -> void:
+	if body.has_method("take_damage"):
+		body.take_damage(damage)
+	queue_free()
