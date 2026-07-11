@@ -72,7 +72,15 @@ var save_state_nodes: Array = []
 #endregion
 
 #region Parry
+@onready var parry_area = $parry_area
+@onready var parry_hitbox = $parry_area/parry_hitbox
+
 @onready var parry_timer = $parry_timer
+@onready var parry_cooldown_timer = $parry_cooldown_timer
+
+var parry_on_cooldown: bool = false
+var is_parrying: bool = false
+var parried_objects: Array[Node] = []
 #endregion
 
 func _ready():
@@ -88,6 +96,9 @@ func _ready():
 	soft_collision = SoftCollision.new()
 	soft_collision.radius = 20.0 
 	add_child(soft_collision)
+	
+	parry_area.monitoring = false
+	parry_hitbox.disabled = true
 
 func set_health(new_health: float) -> void:
 	health = clamp(new_health, 0, max_health)
@@ -173,14 +184,14 @@ func dash() -> void:
 		dash_timer.start()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("dash"):
+	if event.is_action_pressed("dash") and not is_parrying:
 		dash()
 	if event.is_action_pressed("place_save_state") and save_state_placed < save_state_max_amount:
 		place_save_state()
 	if event.is_action_pressed("rewind_to_save_state") and save_state_placed > 0:
 		rewind_to_save_state()
-	if event.is_action_pressed("parry") and not Global.is_dashing and not Global.is_attacking:
-		pass
+	if event.is_action_pressed("parry") and not Global.is_dashing and not Global.is_attacking and not parry_on_cooldown and not is_parrying:
+		parry()
 
 func place_save_state() -> void:
 	save_state_placed += 1
@@ -222,8 +233,36 @@ func rewind_to_save_state() -> void:
 	save_state_tracker.text = "[b]" + str(save_state_max_amount - save_state_placed) + "/" + str(save_state_max_amount) + "[/b]"
 	dash_tracker.text = "[b]" + str(dash_charges) + "/" + str(dash_amount) + "[/b]"
 
-func take_damage(damage):
+func take_damage(damage) -> void:
 	health -= damage
+
+func parry() -> void:
+	is_parrying = true
+	parry_on_cooldown = true
+	parried_objects.clear()
+	
+	parry_area.monitoring = true
+	parry_hitbox.disabled = false
+	
+	parry_timer.start()
+	call_deferred("_check_initial_overlaps")
+
+func _check_initial_overlaps() -> void:
+	await get_tree().physics_frame
+	if not parry_area.monitoring:
+		return
+	for body in parry_area.get_overlapping_bodies():
+		_on_parry_area_body_entered(body)
+
+func _on_parry_area_body_entered(body: Node) -> void:
+	if body in parried_objects:
+		return
+	
+	if not body.has_method("parried"):
+		return
+	
+	parried_objects.append(body)
+	body.parried()
 
 func _on_health_depleted() -> void:
 	print("Player died")

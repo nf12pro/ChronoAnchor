@@ -113,11 +113,11 @@ shape = SubResource("RectangleShape2D_hv2ic")
 
 [node name="sword_equipment" parent="." unique_id=1586162383 instance=ExtResource("5_qlg0r")]
 
-[node name="parry_range" type="Area2D" parent="." unique_id=1018574559]
+[node name="parry_area" type="Area2D" parent="." unique_id=1018574559]
 collision_layer = 2
 collision_mask = 64
 
-[node name="collision_shape_2d" type="CollisionShape2D" parent="parry_range" unique_id=122239388]
+[node name="parry_hitbox" type="CollisionShape2D" parent="parry_area" unique_id=122239388]
 shape = SubResource("CircleShape2D_6esg4")
 disabled = true
 
@@ -141,9 +141,12 @@ wait_time = 0.15
 one_shot = true
 
 [node name="parry_cooldown_timer" type="Timer" parent="." unique_id=751223214]
+process_callback = 0
+one_shot = true
 
 [node name="camera_2d" type="Camera2D" parent="." unique_id=843484154]
 
+[connection signal="body_entered" from="parry_area" to="." method="_on_parry_area_body_entered"]
 [connection signal="timeout" from="health_timer" to="." method="_on_health_timer_timeout"]
 [connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]
 [connection signal="timeout" from="damage_invincible_timer" to="." method="_on_damage_invincible_timer_timeout"]
