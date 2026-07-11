@@ -7,10 +7,9 @@
 [node name="testing_scene" type="Node2D" unique_id=1774393185]
 
 [node name="player" parent="." unique_id=809222876 instance=ExtResource("1_2j2p2")]
-position = Vector2(-128, 224)
 
 [node name="basic_enemy" parent="." unique_id=101213513 instance=ExtResource("2_2j2p2")]
-position = Vector2(672, 224)
+position = Vector2(384, 192)
 
 [node name="long_range_enemy" parent="." unique_id=142865822 instance=ExtResource("3_v6rby")]
-position = Vector2(576, 64)
+position = Vector2(384, -384)

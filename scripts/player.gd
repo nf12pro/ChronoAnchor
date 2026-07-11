@@ -169,12 +169,6 @@ func dash() -> void:
 		dash_timer.start()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("take_damage_test"):
-		if not dash_invincible or damage_invincible:
-			health -= 10
-			damage_invincible_timer.start()
-			damage_invincible = true
-			Global.freeze(0.18, 0.02)
 	if event.is_action_pressed("dash"):
 		dash()
 	if event.is_action_pressed("place_save_state") and save_state_placed < save_state_max_amount:
