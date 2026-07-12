@@ -34,9 +34,13 @@ var hit_enemies: Array = []
 #endregion
 
 #region Combo
-var combo_step: int = 0
-var combo_ready: bool = false
 @onready var combo_timer = $combo_timer
+
+var combo_length: int = 3  
+
+var active_combo_step: int = 0 
+var combo_step: int = 0        
+var combo_ready: bool = false
 #endregion
 
 #region Grabbing Mechanic
@@ -94,6 +98,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		heavy_attack()
  
 func basic_attack() -> void:
+	active_combo_step = combo_step if combo_ready else 0
 	combo_ready = false
 	combo_timer.stop()
 	 
@@ -109,7 +114,7 @@ func basic_attack() -> void:
 	Global.is_attacking = true
 	on_cooldown = true
 	
-	if combo_step == 2:
+	if active_combo_step == 2:
 		cooldown_timer.start(0.8)
 	else:
 		cooldown_timer.start() 
@@ -122,7 +127,7 @@ func basic_attack() -> void:
 	hitbox_timer.start(0.08)
 	call_deferred("_check_initial_overlaps")
 	
-	combo_step = (combo_step + 1) % 3
+	combo_step = (active_combo_step + 1) % combo_length
 	
 	if combo_step != 0:
 		combo_timer.start() 
@@ -198,19 +203,21 @@ func _on_gloves_area_body_entered(body: Node) -> void:
 			is_holding = true
 			if held_enemy.has_method("grabbed"):
 				held_enemy.grabbed()
-		
 	else:
 		damage = basic_attack_damage
 		knockback_force = basic_knockback
-		if combo_step == 1:
+		if active_combo_step == 1:
+			print("COMBO 1")
 			knockback_force = basic_knockback * 1.25
 			damage = int(basic_attack_damage * 1.25)
 			Global.freeze(0.02, 0.035)
-		elif combo_step == 2:
+		elif active_combo_step == 2:
+			print("COMBO 2")
 			knockback_force = basic_knockback * 1.50
 			damage = int(basic_attack_damage * 1.50)
 			Global.freeze(0.05, 0.05)
 		else:
+			print("FIRST HIT")
 			Global.freeze(0.035, 0.02)
 			
 	var direction = global_position.direction_to(body.global_position)
@@ -237,4 +244,3 @@ func _on_windup_timer_timeout() -> void:
 func _on_combo_timer_timeout() -> void:
 	combo_ready = false
 	combo_step = 0
- 

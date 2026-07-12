@@ -39,8 +39,11 @@ var hit_enemies: Array = []
 #endregion
 
 #region Combo
-var combo_step: int = 0
+var combo_length: int = 2  
+
+var combo_step: int = 0       
 var combo_ready: bool = false
+var active_combo_step: int = 0 
 @onready var combo_timer = $combo_timer
 #endregion
 
@@ -98,28 +101,29 @@ func _unhandled_input(event: InputEvent) -> void:
 		heavy_attack()
  
 func basic_attack() -> void:
+	active_combo_step = combo_step if combo_ready else 0
 	combo_ready = false
 	combo_timer.stop()
- 
+	 
 	Global.on_windup = true
 	windup_timer.start()
 	await windup_timer.timeout
- 
+	 
 	Global.on_windup = false
 	hit_enemies.clear()
 	Global.is_attacking = true
 	on_cooldown = true
 	cooldown_timer.start()
- 
+	 
 	basic_sword_hitbox.disabled = false
 	heavy_sword_hitbox.disabled = true
 	light_sword_hitbox.disabled = true
- 
+	
 	sword_area.monitoring = true
 	hitbox_timer.start()
 	call_deferred("_check_initial_overlaps")
- 
-	combo_step = 1 - combo_step
+	
+	combo_step = (active_combo_step + 1) % combo_length
 	combo_timer.start()
 	combo_ready = true
  
@@ -187,11 +191,13 @@ func _on_sword_area_body_entered(body: Node) -> void:
 	else:
 		damage = basic_attack_damage
 		knockback_force = basic_knockback
-		if combo_step == 1:
+		if active_combo_step == 1:
+			print("Combo")
 			knockback_force = basic_knockback * 1.25 
 			damage = int(basic_attack_damage * 1.25)
 			Global.freeze(0.07, 0.02)
 		else:
+			print("Hit")
 			Global.freeze(0.05, 0.02)
 	var direction = global_position.direction_to(body.global_position)
 	var force = direction * knockback_force
@@ -217,4 +223,3 @@ func _on_windup_timer_timeout() -> void:
 func _on_combo_timer_timeout() -> void:
 	combo_ready = false
 	combo_step = 0
- 

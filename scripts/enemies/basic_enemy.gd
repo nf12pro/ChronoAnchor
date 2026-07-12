@@ -7,7 +7,7 @@ extends CharacterBody2D
 #region Knockback
 var knockback_velocity: Vector2 = Vector2.ZERO
 @export var knockback_friction: float = 600.0
-@export var knockback_strength: float = 400.0
+@export var knockback_strength: float = 100.0
 #endregion
 
 #region Soft Collision
@@ -154,6 +154,8 @@ func set_health(new_health: float) -> void:
 
 func take_damage(damage: float, knockback_force: Vector2 = Vector2.ZERO) -> void:
 	health -= damage
+	if is_grabbed:
+		return
 	stagger = true
 	knockback_velocity = knockback_force
 	stagger_timer.start()
@@ -166,5 +168,6 @@ func _on_stagger_timer_timeout() -> void:
 
 func grabbed() -> void:
 	is_grabbed = true
+	set_collision_layer_value(4, true)
 	knockback_velocity = Vector2.ZERO
 	velocity = Vector2.ZERO

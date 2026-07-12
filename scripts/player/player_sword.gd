@@ -128,7 +128,7 @@ func _physics_process(delta: float) -> void:
 		if soft_collision and (soft_collision.monitoring or soft_collision.monitorable):
 			soft_collision.monitoring = false
 			soft_collision.monitorable = false
-
+		
 		dash_time_left -= delta
 		if dash_time_left <= 0.0:
 			Global.is_dashing = false
