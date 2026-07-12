@@ -47,6 +47,12 @@ var active_combo_step: int = 0
 @onready var combo_timer = $combo_timer
 #endregion
 
+#region Input Buffering
+@export var buffer_window: float = 0.15
+var basic_attack_buffer: float = 0.0
+var heavy_attack_buffer: float = 0.0
+#endregion
+
 func _ready() -> void:
 	sword_area.monitoring = false
 	basic_sword_hitbox.disabled = true
@@ -62,43 +68,61 @@ func generate_semi_circle() -> void:
 		points.append(Vector2(cos(angle) * radius, sin(angle) * radius))
 	heavy_sword_hitbox.polygon = points
  
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if basic_attack_buffer > 0.0: basic_attack_buffer -= delta
+	if heavy_attack_buffer > 0.0: heavy_attack_buffer -= delta
+	
+	if basic_attack_buffer > 0.0:
+		if hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
+			basic_attack_buffer = 0.0
+			basic_sword_attack = false
+			heavy_sword_attack = false
+			light_sword_attack = true
+			combo_ready = false
+			combo_step = 0
+			combo_timer.stop()
+			light_attack()
+		elif hitbox_timer.is_stopped() and (not on_cooldown or combo_ready):
+			basic_attack_buffer = 0.0
+			basic_sword_attack = true
+			heavy_sword_attack = false
+			light_sword_attack = false
+			basic_attack()
+			
+	if heavy_attack_buffer > 0.0:
+		if hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
+			heavy_attack_buffer = 0.0
+			basic_sword_attack = false
+			heavy_sword_attack = true
+			light_sword_attack = false
+			combo_ready = false
+			combo_step = 0
+			combo_timer.stop()
+			_execute_heavy_dash_attack()
+		elif hitbox_timer.is_stopped() and not on_cooldown:
+			heavy_attack_buffer = 0.0
+			basic_sword_attack = false
+			heavy_sword_attack = true
+			light_sword_attack = false
+			combo_ready = false
+			combo_step = 0
+			combo_timer.stop()
+			heavy_attack()
+
 	if Global.is_attacking or Global.on_windup:
 		return 
 	var mouse_position = get_global_mouse_position() 
 	global_rotation = (mouse_position - global_position).angle()
  
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("basic_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
-		basic_sword_attack = false
-		heavy_sword_attack = false
-		light_sword_attack = true
-		combo_ready = false
-		combo_step = 0
-		combo_timer.stop()
-		light_attack()
-	elif event.is_action_pressed("basic_attack") and hitbox_timer.is_stopped() and (not on_cooldown or combo_ready):
-		basic_sword_attack = true
-		heavy_sword_attack = false
-		light_sword_attack = false
-		basic_attack()
-	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
-		basic_sword_attack = false
-		heavy_sword_attack = true
-		light_sword_attack = false
-		combo_ready = false
-		combo_step = 0
-		combo_timer.stop()
-		await player.dash_finished
-		heavy_attack()
-	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and not on_cooldown:
-		basic_sword_attack = false
-		heavy_sword_attack = true
-		light_sword_attack = false
-		combo_ready = false
-		combo_step = 0
-		combo_timer.stop()
-		heavy_attack()
+	if event.is_action_pressed("basic_attack"):
+		basic_attack_buffer = buffer_window
+	elif event.is_action_pressed("heavy_attack"):
+		heavy_attack_buffer = buffer_window
+ 
+func _execute_heavy_dash_attack() -> void:
+	await player.dash_finished
+	heavy_attack()
  
 func basic_attack() -> void:
 	active_combo_step = combo_step if combo_ready else 0

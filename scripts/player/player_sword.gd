@@ -90,6 +90,12 @@ var is_parrying: bool = false
 var parried_objects: Array[Node] = []
 #endregion
 
+#region Input Buffering
+@export var buffer_window: float = 0.15
+var dash_buffer: float = 0.0
+var parry_buffer: float = 0.0
+#endregion
+
 func _ready():
 	health = max_health
 	health_bar.init_health(health)
@@ -115,6 +121,17 @@ func set_health(new_health: float) -> void:
 func _physics_process(delta: float) -> void:
 	Global.player_global_position = self.global_position
 	var current_time = Time.get_ticks_msec()
+	
+	if dash_buffer > 0.0: dash_buffer -= delta
+	if parry_buffer > 0.0: parry_buffer -= delta
+	
+	if dash_buffer > 0.0 and not is_parrying and not Global.is_dashing and dash_charges > 0:
+		dash_buffer = 0.0
+		dash()
+		
+	if parry_buffer > 0.0 and not Global.is_dashing and not Global.is_attacking and not parry_on_cooldown and not is_parrying:
+		parry_buffer = 0.0
+		parry()
 	
 	if knockback_velocity != Vector2.ZERO:
 		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_friction * delta)
@@ -202,15 +219,16 @@ func dash() -> void:
 		dash_timer.start()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("dash") and not is_parrying:
-		dash()
+	if event.is_action_pressed("dash"):
+		dash_buffer = buffer_window
+	if event.is_action_pressed("parry"):
+		parry_buffer = buffer_window
+		
 	if event.is_action_pressed("place_save_state") and save_state_placed < save_state_max_amount:
 		place_save_state()
 	if event.is_action_pressed("rewind_to_save_state") and save_state_placed > 0:
 		save_state_rewinded = true
 		rewind_to_save_state()
-	if event.is_action_pressed("parry") and not Global.is_dashing and not Global.is_attacking and not parry_on_cooldown and not is_parrying:
-		parry()
 
 func place_save_state() -> void:
 	save_state_rewind_timer.start()

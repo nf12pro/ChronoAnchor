@@ -57,13 +57,69 @@ var grab_session: int = 0
 @export var throw_knockback: float = 400.0 
 #endregion
 
+#region Input Buffering
+@export var buffer_window: float = 0.15
+var basic_attack_buffer: float = 0.0
+var heavy_attack_buffer: float = 0.0
+#endregion
+
 func _ready() -> void:
 	gloves_area.monitoring = false
 	basic_gloves_hitbox.disabled = true
 	heavy_gloves_hitbox.disabled = true
 	light_gloves_hitbox.disabled = true
  
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if basic_attack_buffer > 0.0: basic_attack_buffer -= delta
+	if heavy_attack_buffer > 0.0: heavy_attack_buffer -= delta
+	
+	if hitbox_timer.is_stopped():
+		if basic_attack_buffer > 0.0:
+			if Global.is_grabbing:
+				basic_attack_buffer = 0.0
+				combo_ready = false
+				combo_step = 0
+				combo_timer.stop()
+				throw_held_enemy()
+			elif Global.is_dashing and not on_cooldown:
+				basic_attack_buffer = 0.0
+				basic_gloves_attack = false
+				heavy_gloves_attack = false
+				light_gloves_attack = true
+				combo_ready = false
+				combo_step = 0
+				combo_timer.stop()
+				light_attack()
+			elif not on_cooldown or combo_ready:
+				basic_attack_buffer = 0.0
+				basic_gloves_attack = true
+				heavy_gloves_attack = false
+				light_gloves_attack = false
+				basic_attack()
+				
+		elif heavy_attack_buffer > 0.0:
+			if Global.is_grabbing:
+				heavy_attack_buffer = 0.0
+				release_held_enemy()
+			elif Global.is_dashing and not on_cooldown:
+				heavy_attack_buffer = 0.0
+				basic_gloves_attack = false
+				heavy_gloves_attack = true
+				light_gloves_attack = false
+				combo_ready = false
+				combo_step = 0
+				combo_timer.stop()
+				_execute_dashed_heavy_attack()
+			elif not on_cooldown:
+				heavy_attack_buffer = 0.0
+				basic_gloves_attack = false
+				heavy_gloves_attack = true
+				light_gloves_attack = false
+				combo_ready = false
+				combo_step = 0
+				combo_timer.stop()
+				heavy_attack()
+
 	if Global.is_attacking or Global.on_windup:
 		return 
 	if Global.is_grabbing:
@@ -76,47 +132,14 @@ func _process(_delta: float) -> void:
 	global_rotation = (mouse_position - global_position).angle()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("heavy_attack") and Global.is_grabbing:
-		release_held_enemy()
-		return
-	
-	if event.is_action_pressed("basic_attack") and Global.is_grabbing:
-		combo_ready = false
-		combo_step = 0
-		combo_timer.stop()
-		throw_held_enemy()
-		return
-	
-	if event.is_action_pressed("basic_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
-		basic_gloves_attack = false
-		heavy_gloves_attack = false
-		light_gloves_attack = true
-		combo_ready = false
-		combo_step = 0
-		combo_timer.stop()
-		light_attack()
-	elif event.is_action_pressed("basic_attack") and hitbox_timer.is_stopped() and (not on_cooldown or combo_ready):
-		basic_gloves_attack = true
-		heavy_gloves_attack = false
-		light_gloves_attack = false
-		basic_attack()
-	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
-		basic_gloves_attack = false
-		heavy_gloves_attack = true
-		light_gloves_attack = false
-		combo_ready = false
-		combo_step = 0
-		combo_timer.stop()
-		await player.dash_finished
-		heavy_attack()
-	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and not on_cooldown:
-		basic_gloves_attack = false
-		heavy_gloves_attack = true
-		light_gloves_attack = false
-		combo_ready = false
-		combo_step = 0
-		combo_timer.stop()
-		heavy_attack()
+	if event.is_action_pressed("basic_attack"):
+		basic_attack_buffer = buffer_window
+	if event.is_action_pressed("heavy_attack"):
+		heavy_attack_buffer = buffer_window
+
+func _execute_dashed_heavy_attack() -> void:
+	await player.dash_finished
+	heavy_attack()
  
 func basic_attack() -> void:
 	active_combo_step = combo_step if combo_ready else 0
@@ -225,17 +248,14 @@ func _on_gloves_area_body_entered(body: Node) -> void:
 		damage = basic_attack_damage
 		knockback_force = basic_knockback
 		if active_combo_step == 1:
-			print("COMBO 1")
 			knockback_force = basic_knockback * 1.25
 			damage = int(basic_attack_damage * 1.25)
 			Global.freeze(0.02, 0.035)
 		elif active_combo_step == 2:
-			print("COMBO 2")
 			knockback_force = basic_knockback * 1.50
 			damage = int(basic_attack_damage * 1.50)
 			Global.freeze(0.05, 0.05)
 		else:
-			print("FIRST HIT")
 			Global.freeze(0.035, 0.02)
 			
 	var direction = global_position.direction_to(body.global_position)
@@ -268,7 +288,7 @@ func release_held_enemy() -> void:
 func throw_held_enemy() -> void:
 	var body := held_enemy
 	
-	release_held_enemy()        
+	release_held_enemy()         
 	on_cooldown = true
 	cooldown_timer.start()       
 	
