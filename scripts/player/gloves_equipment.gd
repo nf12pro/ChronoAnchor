@@ -52,6 +52,9 @@ var held_enemy: CharacterBody2D = null
 @export var grab_duration: float = 3.0
 var grabbing_on_cooldown: bool = false
 var grab_session: int = 0 
+
+@export var throw_damage: int = 35      
+@export var throw_knockback: float = 400.0 
 #endregion
 
 func _ready() -> void:
@@ -75,6 +78,13 @@ func _process(_delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("heavy_attack") and Global.is_grabbing:
 		release_held_enemy()
+		return
+	
+	if event.is_action_pressed("basic_attack") and Global.is_grabbing:
+		combo_ready = false
+		combo_step = 0
+		combo_timer.stop()
+		throw_held_enemy()
 		return
 	
 	if event.is_action_pressed("basic_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
@@ -240,7 +250,7 @@ func grab_enemy(body: CharacterBody2D) -> void:
 	grab_session += 1
 	var this_session := grab_session
 	
-	held_enemy.grabbed(grab_duration, false)
+	held_enemy.grabbed(false)
 	
 	await get_tree().create_timer(grab_duration).timeout
 	if grab_session == this_session and Global.is_grabbing:
@@ -248,12 +258,27 @@ func grab_enemy(body: CharacterBody2D) -> void:
 
 func release_held_enemy() -> void:
 	if is_instance_valid(held_enemy) and held_enemy.has_method("grabbed"):
-		held_enemy.grabbed(grab_duration, true)
+		held_enemy.grabbed(true)
 	Global.is_grabbing = false
 	held_enemy = null
 	grabbing_on_cooldown = true
 	grabbing_cooldown_timer.start()
- 
+
+func throw_held_enemy() -> void:
+	var body := held_enemy
+	
+	release_held_enemy()        
+	on_cooldown = true
+	cooldown_timer.start()       
+	
+	if is_instance_valid(body) and body.has_method("take_damage"):
+		var direction = global_position.direction_to(body.global_position)
+		if direction == Vector2.ZERO:
+			direction = Vector2.RIGHT.rotated(global_rotation)
+		var force = direction * throw_knockback
+		body.take_damage(throw_damage, force)
+		Global.freeze(0.075, 0.1)
+
 func _on_hitbox_timer_timeout() -> void:
 	gloves_area.monitoring = false
 	basic_gloves_hitbox.disabled = true

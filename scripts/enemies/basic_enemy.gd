@@ -28,6 +28,7 @@ var health: float = 500 : set = set_health
 
 #region Stagger
 @onready var stagger_timer = $stagger_timer
+
 var stagger: bool = false
 #endregion
 
@@ -166,7 +167,7 @@ func _on_health_depleted() -> void:
 func _on_stagger_timer_timeout() -> void:
 	stagger = false
 
-func grabbed(duration: float, release: bool) -> void:
+func grabbed(release: bool) -> void:
 	if release:
 		Global.is_grabbing = false
 		is_grabbed = false

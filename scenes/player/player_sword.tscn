@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bxkwp55wasp7b" path="res://assets/prototype_dash_fragment.png" id="4_dqkch"]
 [ext_resource type="PackedScene" uid="uid://bbkit7y8fwlse" path="res://scenes/player/sword_equipment.tscn" id="5_qlg0r"]
 [ext_resource type="Texture2D" uid="uid://c1btvnms7f7yy" path="res://assets/prototype_save_state.png" id="5_tuyoq"]
+[ext_resource type="Script" uid="uid://b0xgp7dw6o7kl" path="res://scripts/systems/camera_2d.gd" id="7_pp1t8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
 atlas = ExtResource("1_3vyb7")
@@ -150,6 +151,8 @@ wait_time = 3.0
 one_shot = true
 
 [node name="camera_2d" type="Camera2D" parent="." unique_id=843484154]
+process_callback = 0
+script = ExtResource("7_pp1t8")
 
 [connection signal="area_entered" from="parry_area" to="." method="_on_parry_area_area_entered"]
 [connection signal="timeout" from="health_timer" to="." method="_on_health_timer_timeout"]

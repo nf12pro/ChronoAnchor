@@ -192,13 +192,11 @@ func _on_sword_area_body_entered(body: Node) -> void:
 		damage = basic_attack_damage
 		knockback_force = basic_knockback
 		if active_combo_step == 1:
-			print("Combo")
 			knockback_force = basic_knockback * 1.25 
 			damage = int(basic_attack_damage * 1.25)
 			Global.freeze(0.07, 0.02)
 		else:
-			print("Hit")
-			Global.freeze(0.05, 0.02)
+			Global.freeze(0.05, 0.015)
 	var direction = global_position.direction_to(body.global_position)
 	var force = direction * knockback_force
 	body.take_damage(damage, force)

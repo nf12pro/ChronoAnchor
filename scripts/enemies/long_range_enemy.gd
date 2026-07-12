@@ -52,6 +52,10 @@ var is_attacking: bool = false
 var is_winding_up: bool = false
 #endregion
 
+#region Grabbing
+var is_grabbed: bool = false
+#endregion
+
 func _ready():
 	health = max_health
 	health_bar.init_health(health)
@@ -115,11 +119,11 @@ func _on_attack_range_body_entered(body: Node2D) -> void:
 func _on_attack_range_body_exited(body: Node2D) -> void:
 	if body.name == "player_sword" or "player_gloves":
 		in_attack_range = false
-
+	
 func _on_too_close_range_body_entered(body: Node2D) -> void:
 	if body.name == "player_sword" or "player_gloves":
 		too_close = true
-
+	
 func _on_too_close_range_body_exited(body: Node2D) -> void:
 	if body.name == "player_sword" or "player_gloves":
 		too_close = false
@@ -129,15 +133,15 @@ func attack() -> void:
 	is_winding_up = true
 	on_cooldown = true
 	velocity = Vector2.ZERO
-
+	
 	windup_timer.start()
 	await windup_timer.timeout
-
+	
 	is_winding_up = false
-
+	
 	if not stagger:
 		fire_projectile()
-
+	
 	hitbox_timer.start()
 
 func fire_projectile() -> void:
@@ -172,3 +176,17 @@ func _on_health_depleted() -> void:
 
 func _on_stagger_timer_timeout() -> void:
 	stagger = false
+
+func grabbed(release: bool) -> void:
+	if release:
+		Global.is_grabbing = false
+		is_grabbed = false
+		stagger = false
+		knockback_velocity = Vector2.ZERO
+		set_collision_layer_value(4, false)
+	else:
+		Global.is_grabbing = true
+		is_grabbed = true
+		set_collision_layer_value(4, true)
+		knockback_velocity = Vector2.ZERO
+		velocity = Vector2.ZERO

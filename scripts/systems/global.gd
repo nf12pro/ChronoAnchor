@@ -13,6 +13,7 @@ var is_grabbing = false
 
 #region Hitstop/Freeze
 var request_id: int = 0
+var screen_shake_enabled: bool = true
 
 func freeze(duration, scale) -> void:
 	request_id += 1
@@ -22,4 +23,5 @@ func freeze(duration, scale) -> void:
 	await local_timer.timeout
 	if my_id == request_id:
 		Engine.time_scale = 1
+
 #endregion

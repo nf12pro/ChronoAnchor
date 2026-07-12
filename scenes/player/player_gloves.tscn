@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://c1btvnms7f7yy" path="res://assets/prototype_save_state.png" id="4_08i2t"]
 [ext_resource type="Texture2D" uid="uid://cyx23xojcaqrv" path="res://assets/prototype_player_default_animation.png" id="5_lvxh1"]
 [ext_resource type="PackedScene" uid="uid://bj0y75mf47siw" path="res://scenes/player/gloves_equipment.tscn" id="6_63hfo"]
+[ext_resource type="Script" uid="uid://b0xgp7dw6o7kl" path="res://scripts/systems/camera_2d.gd" id="7_dq2cg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
 atlas = ExtResource("5_lvxh1")
@@ -150,6 +151,8 @@ wait_time = 3.0
 one_shot = true
 
 [node name="camera_2d" type="Camera2D" parent="." unique_id=843484154]
+process_callback = 0
+script = ExtResource("7_dq2cg")
 
 [connection signal="area_entered" from="parry_area" to="." method="_on_parry_area_area_entered"]
 [connection signal="timeout" from="health_timer" to="." method="_on_health_timer_timeout"]
