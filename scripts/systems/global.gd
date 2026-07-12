@@ -11,6 +11,13 @@ var player_global_position : Vector2
 var is_grabbing = false
 #endregion
 
+#region Camera
+signal screenshake_requested(strength: float, duration: float)
+
+func apply_screenshake(strength: float, duration: float = 0.5) -> void:
+	screenshake_requested.emit(strength, duration)
+#endregion
+
 #region Hitstop/Freeze
 var request_id: int = 0
 var screen_shake_enabled: bool = true
@@ -23,5 +30,4 @@ func freeze(duration, scale) -> void:
 	await local_timer.timeout
 	if my_id == request_id:
 		Engine.time_scale = 1
-
 #endregion

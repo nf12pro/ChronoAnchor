@@ -174,8 +174,9 @@ func heavy_attack() -> void:
 	Global.cancelled_attack = false
 	Global.on_windup = true
 	windup_timer.start(0.2)
-	Global.freeze(0.01, 0.90)
 	await windup_timer.timeout
+	Global.freeze(0.01, 0.9)
+	Global.apply_screenshake(0.2, 0.9)
 	
 	if Global.cancelled_attack:
 		return
@@ -277,7 +278,8 @@ func throw_held_enemy() -> void:
 			direction = Vector2.RIGHT.rotated(global_rotation)
 		var force = direction * throw_knockback
 		body.take_damage(throw_damage, force)
-		Global.freeze(0.075, 0.1)
+		Global.freeze(0.075, 0.5)
+		Global.apply_screenshake(0.3, 0.5)
 
 func _on_hitbox_timer_timeout() -> void:
 	gloves_area.monitoring = false

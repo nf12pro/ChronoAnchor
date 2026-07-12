@@ -145,6 +145,7 @@ func heavy_attack() -> void:
 	Global.cancelled_attack = false
 	Global.on_windup = true
 	windup_timer.start(0.5)
+	Global.apply_screenshake(0.8)
 	Global.freeze(0.01, 0.90)
 	await windup_timer.timeout
 	

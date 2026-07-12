@@ -1,34 +1,31 @@
 extends Camera2D
 
-@export var max_offset: Vector2 = Vector2(20, 20)
-@export var max_roll: float = 0.1 
+@export var max_offset: Vector2 = Vector2(50, 50)  
 
-@export var decay: float = 0.8 
-
-var trauma: float = 0.0
-var trauma_power: float = 2
-
-@onready var noise: FastNoiseLite = $Offset.noise 
-var noise_y: float = 0.0
+var trauma: float = 0.0  
+var trauma_power: int = 2  
+var current_decay: float = 0.0
 
 func _ready() -> void:
-	randomize()
+	Global.screenshake_requested.connect(_add_trauma)
 
-func add_trauma(amount: float) -> void:
-	trauma = clamp(trauma + amount, 0.0, 1.0)
+func _add_trauma(amount: float, duration: float) -> void:
+	trauma = min(trauma + amount, 1.0)
+	
+	if duration > 0.0:
+		current_decay = trauma / duration
+	else:
+		current_decay = 10.0
 
 func _process(delta: float) -> void:
-	if trauma > 0.0:
-		trauma = max(trauma - decay * delta, 0.0)
-		shake()
-	else:
+	if trauma > 0:
+		trauma = max(trauma - current_decay * delta, 0.0)
+		_apply_shake()
+	elif offset != Vector2.ZERO:
 		offset = Vector2.ZERO
-		rotation = 0.0
 
-func shake() -> void:
+func _apply_shake() -> void:
 	var amount = pow(trauma, trauma_power)
-	noise_y += 1.0
 	
-	offset.x = max_offset.x * amount * noise.get_noise_2d(noise.seed, noise_y)
-	offset.y = max_offset.y * amount * noise.get_noise_2d(noise.seed * 2, noise_y)
-	rotation = max_roll * amount * noise.get_noise_2d(noise.seed * 3, noise_y)
+	offset.x = max_offset.x * amount * randf_range(-1.0, 1.0)
+	offset.y = max_offset.y * amount * randf_range(-1.0, 1.0)
