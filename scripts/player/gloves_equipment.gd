@@ -60,8 +60,9 @@ func _process(_delta: float) -> void:
 	if Global.is_attacking or Global.on_windup:
 		return 
 	if is_holding and held_enemy != null:
-		held_enemy.global_position = hold_point.global_position
-	
+		if Global.grab_stop == false:
+			held_enemy.global_position = hold_point.global_position
+		
 	var mouse_position = get_global_mouse_position() 
 	global_rotation = (mouse_position - global_position).angle()
 
@@ -202,7 +203,7 @@ func _on_gloves_area_body_entered(body: Node) -> void:
 			held_enemy = body
 			is_holding = true
 			if held_enemy.has_method("grabbed"):
-				held_enemy.grabbed()
+				held_enemy.grabbed(3.0)
 	else:
 		damage = basic_attack_damage
 		knockback_force = basic_knockback

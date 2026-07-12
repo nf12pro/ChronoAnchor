@@ -1,12 +1,18 @@
 extends Node
 
-var request_id: int = 0
+#region General Variables
 var is_dashing: bool = false
 var is_attacking: bool = false
 var on_windup: bool = false
 var cancelled_attack: bool = false
 
 var player_global_position : Vector2
+
+var grab_stop = false
+#endregion
+
+#region Hitstop/Freeze
+var request_id: int = 0
 
 func freeze(duration, scale) -> void:
 	request_id += 1
@@ -16,3 +22,4 @@ func freeze(duration, scale) -> void:
 	await local_timer.timeout
 	if my_id == request_id:
 		Engine.time_scale = 1
+#endregion
