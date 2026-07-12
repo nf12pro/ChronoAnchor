@@ -45,9 +45,12 @@ var combo_ready: bool = false
 
 #region Grabbing Mechanic
 @onready var hold_point = $hold_point
-
+@onready var grabbing_cooldown_timer = $grabbing_cooldown_timer
 @onready var held_enemy: CharacterBody2D = null
-var is_holding: bool = false
+
+
+@export var grab_duration: float = 3.0
+var grabbing_on_cooldown: bool = false
 #endregion
 
 func _ready() -> void:
@@ -59,10 +62,9 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if Global.is_attacking or Global.on_windup:
 		return 
-	if is_holding and held_enemy != null:
-		if Global.grab_stop == false:
-			held_enemy.global_position = hold_point.global_position
-		
+	if Global.is_grabbing and held_enemy != null:
+		held_enemy.global_position = hold_point.global_position
+	
 	var mouse_position = get_global_mouse_position() 
 	global_rotation = (mouse_position - global_position).angle()
 
@@ -80,7 +82,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		heavy_gloves_attack = false
 		light_gloves_attack = false
 		basic_attack()
-	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown:
+	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and Global.is_dashing and not on_cooldown and not grabbing_on_cooldown:
 		basic_gloves_attack = false
 		heavy_gloves_attack = true
 		light_gloves_attack = false
@@ -89,7 +91,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		combo_timer.stop()
 		await player.dash_finished
 		heavy_attack()
-	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and not on_cooldown:
+	elif event.is_action_pressed("heavy_attack") and hitbox_timer.is_stopped() and not on_cooldown and not grabbing_on_cooldown:
 		basic_gloves_attack = false
 		heavy_gloves_attack = true
 		light_gloves_attack = false
@@ -199,11 +201,15 @@ func _on_gloves_area_body_entered(body: Node) -> void:
 		knockback_force = heavy_knockback
 		Global.freeze(0.10, 0.01)
 		
-		if not is_holding and body is CharacterBody2D:
+		if not Global.is_grabbing and not grabbing_on_cooldown and body is CharacterBody2D:
 			held_enemy = body
-			is_holding = true
+			Global.is_grabbing = true
 			if held_enemy.has_method("grabbed"):
-				held_enemy.grabbed(3.0)
+				held_enemy.grabbed(grab_duration)
+				await get_tree().create_timer(grab_duration).timeout
+				grabbing_on_cooldown = true
+				grabbing_cooldown_timer.start()
+
 	else:
 		damage = basic_attack_damage
 		knockback_force = basic_knockback
@@ -235,7 +241,7 @@ func _on_hitbox_timer_timeout() -> void:
 	light_gloves_attack = false
 	hit_enemies.clear()
 	Global.is_attacking = false
- 
+
 func _on_cooldown_timer_timeout() -> void:
 	on_cooldown = false
  
@@ -245,3 +251,6 @@ func _on_windup_timer_timeout() -> void:
 func _on_combo_timer_timeout() -> void:
 	combo_ready = false
 	combo_step = 0
+
+func _on_grabbing_cooldown_timer_timeout() -> void:
+	grabbing_on_cooldown = false

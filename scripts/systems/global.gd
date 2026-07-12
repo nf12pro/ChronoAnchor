@@ -8,7 +8,7 @@ var cancelled_attack: bool = false
 
 var player_global_position : Vector2
 
-var grab_stop = false
+var is_grabbing = false
 #endregion
 
 #region Hitstop/Freeze
