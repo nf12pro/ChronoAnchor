@@ -166,15 +166,16 @@ func _on_health_depleted() -> void:
 func _on_stagger_timer_timeout() -> void:
 	stagger = false
 
-func grabbed(duration) -> void:
-	Global.is_grabbing = true
-	is_grabbed = true
-	set_collision_layer_value(4, true)
-	knockback_velocity = Vector2.ZERO
-	velocity = Vector2.ZERO
-	await get_tree().create_timer(duration).timeout
-	Global.is_grabbing = false
-	is_grabbed = false
-	stagger = false
-	knockback_velocity = Vector2.ZERO
-	set_collision_layer_value(4, false)
+func grabbed(duration: float, release: bool) -> void:
+	if release:
+		Global.is_grabbing = false
+		is_grabbed = false
+		stagger = false
+		knockback_velocity = Vector2.ZERO
+		set_collision_layer_value(4, false)
+	else:
+		Global.is_grabbing = true
+		is_grabbed = true
+		set_collision_layer_value(4, true)
+		knockback_velocity = Vector2.ZERO
+		velocity = Vector2.ZERO
