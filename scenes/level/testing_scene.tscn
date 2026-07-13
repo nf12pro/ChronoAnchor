@@ -5,9 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://c5rd8jllrhrex" path="res://scenes/enemies/long_range_enemy.tscn" id="3_v6rby"]
 [ext_resource type="PackedScene" uid="uid://cptti08dk0sxp" path="res://scenes/systems/test_wall.tscn" id="4_xlry7"]
 
-[node name="testing_scene" type="Node2D" unique_id=1774393185]
+[sub_resource type="TileSet" id="TileSet_6esg4"]
 
-[node name="player_gloves" parent="." unique_id=142865822 instance=ExtResource("1_xlry7")]
+[node name="testing_scene" type="Node2D" unique_id=1774393185]
 
 [node name="basic_enemy" parent="." unique_id=101213513 instance=ExtResource("2_2j2p2")]
 position = Vector2(384, 192)
@@ -17,3 +17,8 @@ position = Vector2(384, -384)
 
 [node name="test_wall" parent="." unique_id=1157245480 instance=ExtResource("4_xlry7")]
 position = Vector2(49, -61)
+
+[node name="player_gloves" parent="." unique_id=142865822 instance=ExtResource("1_xlry7")]
+
+[node name="tile_map_layer" type="TileMapLayer" parent="." unique_id=501247099]
+tile_set = SubResource("TileSet_6esg4")
