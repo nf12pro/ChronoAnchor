@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://bt1omrk7djfjg"]
+
+[ext_resource type="Script" uid="uid://bvr3llysxsrn6" path="res://scripts/player/gun_equipment.gd" id="1_te8l4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6esg4"]
+size = Vector2(80.25, 27)
+
+[node name="gun_equipment" type="Node2D" unique_id=1586162383]
+script = ExtResource("1_te8l4")
+
+[node name="gun_area" type="Area2D" parent="." unique_id=1393820661]
+collision_layer = 2
+collision_mask = 16
+
+[node name="heavy_gun_hitbox" type="CollisionShape2D" parent="gun_area" unique_id=972961817]
+position = Vector2(232, 0)
+scale = Vector2(5.779999, 0.4499743)
+shape = SubResource("RectangleShape2D_6esg4")
+disabled = true
+
+[node name="basic_gun_hitbox" type="CollisionShape2D" parent="gun_area" unique_id=238460263]
+position = Vector2(232, 0)
+scale = Vector2(5.779999, 0.4499743)
+shape = SubResource("RectangleShape2D_6esg4")
+disabled = true
+
+[node name="light_gun_hitbox" type="CollisionShape2D" parent="gun_area" unique_id=1705695705]
+position = Vector2(232, 0)
+scale = Vector2(5.779999, 0.4499743)
+shape = SubResource("RectangleShape2D_6esg4")
+disabled = true
+
+[node name="hitbox_timer" type="Timer" parent="." unique_id=588127811]
+process_callback = 0
+wait_time = 0.05
+one_shot = true
+
+[node name="cooldown_timer" type="Timer" parent="." unique_id=1566083565]
+process_callback = 0
+wait_time = 0.2
+one_shot = true
+
+[node name="windup_timer" type="Timer" parent="." unique_id=349641787]
+process_callback = 0
+wait_time = 0.05
+one_shot = true
+
+[connection signal="body_entered" from="gun_area" to="." method="_on_gun_area_body_entered"]
+[connection signal="timeout" from="hitbox_timer" to="." method="_on_hitbox_timer_timeout"]
+[connection signal="timeout" from="cooldown_timer" to="." method="_on_cooldown_timer_timeout"]
+[connection signal="timeout" from="windup_timer" to="." method="_on_windup_timer_timeout"]
