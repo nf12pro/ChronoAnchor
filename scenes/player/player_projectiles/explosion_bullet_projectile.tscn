@@ -26,4 +26,9 @@ shape = SubResource("RectangleShape2D_vsm1e")
 shape = SubResource("CircleShape2D_6esg4")
 disabled = true
 
+[node name="explosion_timer" type="Timer" parent="." unique_id=894591672]
+process_callback = 0
+one_shot = true
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="explosion_timer" to="." method="_on_explosion_timer_timeout"]

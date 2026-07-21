@@ -16,6 +16,8 @@ var is_parried: bool = false
 @onready var explosion_hitbox = $explosion_hitbox
 @onready var sprite_2d = $sprite_2d
 
+@onready var explosion_timer = $explosion_timer
+
 var projectile_hitbox_active = true
 var hit_enemies: Array = []
 #endregion
@@ -23,6 +25,8 @@ var hit_enemies: Array = []
 func _ready() -> void:
 	projectile_hitbox.disabled = false
 	explosion_hitbox.disabled = true
+	
+	explosion_timer.start()
 
 func _physics_process(delta: float) -> void:
 	if projectile_hitbox_active:
@@ -53,3 +57,6 @@ func explode() -> void:
 	
 	await get_tree().create_timer(0.15).timeout
 	queue_free()
+
+func _on_explosion_timer_timeout() -> void:
+	explode()
