@@ -64,6 +64,9 @@ signal dash_finished
 @onready var save_state_tracker = $save_state_tracker
 @onready var save_state_rewind_timer = $save_state_rewind_timer
 
+@onready var save_state_effect = $save_state_effect
+@onready var save_state_active_timer = $save_state_active_timer
+
 const save_state_sprite = preload("res://scenes/player/save_state_sprite_loading.tscn")
 
 @export var save_state_max_amount: int = 1
@@ -247,6 +250,13 @@ func place_save_state() -> void:
 	save_state_nodes.append(save_state_sprite_loaded)
 
 func rewind_to_save_state() -> void:
+	save_state_effect.visible = true
+	
+	save_state_active_timer.start()
+	await save_state_active_timer.timeout
+	
+	save_state_effect.visible = false
+	
 	dash_charges = save_state_dash_charges[0]
 	health = save_state_health[0]
 	

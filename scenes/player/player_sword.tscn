@@ -150,9 +150,21 @@ one_shot = true
 wait_time = 3.0
 one_shot = true
 
+[node name="save_state_active_timer" type="Timer" parent="." unique_id=2061415359]
+process_callback = 0
+one_shot = true
+
 [node name="camera_2d" type="Camera2D" parent="." unique_id=843484154]
 process_callback = 0
 script = ExtResource("7_pp1t8")
+
+[node name="save_state_effect" type="ColorRect" parent="." unique_id=2021246085]
+visible = false
+offset_left = -481.0
+offset_top = -275.0
+offset_right = 480.0
+offset_bottom = 271.0
+color = Color(0.52156866, 0.52156866, 0, 0.5882353)
 
 [connection signal="area_entered" from="parry_area" to="." method="_on_parry_area_area_entered"]
 [connection signal="timeout" from="health_timer" to="." method="_on_health_timer_timeout"]
