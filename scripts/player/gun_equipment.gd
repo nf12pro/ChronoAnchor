@@ -29,7 +29,7 @@ var hit_enemies: Array = []
 @export var heavy_attack_damage: int = 30
 
 @export var basic_knockback: float = 150.0
-@export var light_knockback: float = 100.0
+@export var light_knockback: float = 400.0
 @export var heavy_knockback: float = 300.0
 #endregion
 
@@ -130,7 +130,7 @@ func heavy_attack() -> void:
 	Global.on_windup = true
 	windup_timer.start(0.5)
 	await windup_timer.timeout
-	Global.apply_screenshake(0.8)
+	Global.apply_screenshake(0.5)
 	Global.freeze(0.01, 0.90)
 	
 	if Global.cancelled_attack:

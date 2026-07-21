@@ -9,6 +9,8 @@ var cancelled_attack: bool = false
 var player_global_position : Vector2
 
 var is_grabbing = false
+
+var weapon_used: String = "" #Sword, Gloves, Gun
 #endregion
 
 #region Camera

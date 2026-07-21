@@ -162,7 +162,14 @@ func take_damage(damage: float, knockback_force: Vector2 = Vector2.ZERO) -> void
 	stagger_timer.start()
 
 func _on_health_depleted() -> void:
+	randf()
+	if Global.weapon_used == "String":
+		if randf() <= 0.50:
+			drop_bullet()
 	self.queue_free()
+
+func drop_bullet() -> void:
+	pass
 
 func _on_stagger_timer_timeout() -> void:
 	stagger = false
