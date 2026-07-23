@@ -215,16 +215,17 @@ func _on_health_depleted() -> void:
 	if Global.weapon_used == "Gun":
 		if randf() <= 0.50:
 			drop_bullet()
-	queue_free()
+	
+	queue_free.call_deferred()
 
 func drop_bullet() -> void:
 	var drops: Array = [exploding_Drop, freezing_Drop, plasma_Drop]
-	
 	var selected_drop_scene: PackedScene = drops.pick_random()
 	
 	var drop = selected_drop_scene.instantiate()
-	get_tree().current_scene.add_child(drop)
 	drop.global_position = global_position
+	
+	get_tree().current_scene.add_child.call_deferred(drop)
 
 func _on_stagger_timer_timeout() -> void:
 	stagger = false
