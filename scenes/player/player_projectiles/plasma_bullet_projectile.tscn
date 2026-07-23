@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://crqybb1fr3wew"]
+
+[ext_resource type="Script" uid="uid://cf525i34w6ema" path="res://scripts/player/player_projectiles/plasma_bullet_projectile.gd" id="1_3dihl"]
+[ext_resource type="Texture2D" uid="uid://cfaxmwfajtaer" path="res://assets/prototype_long_range_enemy_projectile.png" id="2_ylcw5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vsm1e"]
+size = Vector2(1885, 29)
+
+[node name="plasma_bullet_projectile" type="Area2D" unique_id=2126754162]
+collision_layer = 32
+collision_mask = 144
+script = ExtResource("1_3dihl")
+
+[node name="sprite_2d" type="Sprite2D" parent="." unique_id=1081615551]
+modulate = Color(0, 0.49411765, 0, 1)
+position = Vector2(924, 0)
+scale = Vector2(58.75, 1)
+texture = ExtResource("2_ylcw5")
+
+[node name="projectile_hitbox" type="CollisionShape2D" parent="." unique_id=270875432]
+position = Vector2(922.5, -0.5)
+shape = SubResource("RectangleShape2D_vsm1e")
+
+[node name="dissapear_timer" type="Timer" parent="." unique_id=852981119]
+process_callback = 0
+wait_time = 0.1
+one_shot = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="dissapear_timer" to="." method="_on_dissapear_timer_timeout"]

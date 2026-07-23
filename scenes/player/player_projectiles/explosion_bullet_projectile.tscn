@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cfaxmwfajtaer" path="res://assets/prototype_long_range_enemy_projectile.png" id="2_ofkdd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vsm1e"]
-size = Vector2(30, 25)
+size = Vector2(32, 29)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6esg4"]
 radius = 71.063354
