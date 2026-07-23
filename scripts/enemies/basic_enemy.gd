@@ -60,6 +60,12 @@ var is_frozen: bool = false
 var freeze_time_left: float = 0.0
 #endregion
 
+#region Dropping Bullet
+const exploding_Drop = preload("res://scenes/player/player_projectiles/explosion_drop.tscn")
+const freezing_Drop = preload("res://scenes/player/player_projectiles/freezing_drop.tscn")
+const plasma_Drop = preload("res://scenes/player/player_projectiles/plasma_drop.tscn")
+#endregion
+
 func _ready():
 	health = max_health
 	health_bar.init_health(health)
@@ -206,14 +212,19 @@ func take_damage(damage: float, knockback_force: Vector2 = Vector2.ZERO) -> void
 	stagger_timer.start()
 
 func _on_health_depleted() -> void:
-	randf()
-	if Global.weapon_used == "String":
+	if Global.weapon_used == "Gun":
 		if randf() <= 0.50:
 			drop_bullet()
-	self.queue_free()
+	queue_free()
 
 func drop_bullet() -> void:
-	pass
+	var drops: Array = [exploding_Drop, freezing_Drop, plasma_Drop]
+	
+	var selected_drop_scene: PackedScene = drops.pick_random()
+	
+	var drop = selected_drop_scene.instantiate()
+	get_tree().current_scene.add_child(drop)
+	drop.global_position = global_position
 
 func _on_stagger_timer_timeout() -> void:
 	stagger = false

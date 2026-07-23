@@ -37,9 +37,11 @@ var heavy_attack_buffer: float = 0.0
 #endregion
 
 #region Heavy Attack
-const Projectile = preload("res://scenes/player/player_projectiles/plasma_bullet_projectile.tscn")
 
-@export var projectile_speed: float = 500.0
+const exploding_Projectile = preload("res://scenes/player/player_projectiles/explosion_bullet_projectile.tscn")
+const freezing_Projectile = preload("res://scenes/player/player_projectiles/freeze_bullet_projectile.tscn")
+const plasma_Projectile = preload("res://scenes/player/player_projectiles/plasma_bullet_projectile.tscn")
+
 @export var projectile_spawn_offset: float = 30.0
 #endregion
 
@@ -135,15 +137,30 @@ func heavy_attack() -> void:
 	if Global.cancelled_attack:
 		return
 	
-	Global.apply_screenshake(0.5)
 	Global.freeze(0.01, 0.80)
 	
-	var projectile = Projectile.instantiate()
-	get_tree().current_scene.add_child(projectile)
-	projectile.global_position = global_position + Vector2.RIGHT.rotated(rotation) * projectile_spawn_offset
-	projectile.rotation = rotation
-	projectile.direction = Vector2.RIGHT.rotated(rotation)
-	projectile.speed = projectile_speed
+	if Global.bullet_available == "Explosion":
+		var projectile = exploding_Projectile.instantiate()
+		get_tree().current_scene.add_child(projectile)
+		projectile.global_position = global_position + Vector2.RIGHT.rotated(rotation) * projectile_spawn_offset
+		projectile.rotation = rotation
+		projectile.direction = Vector2.RIGHT.rotated(rotation)
+	elif Global.bullet_available == "Freezing":
+		var projectile = freezing_Projectile.instantiate()
+		get_tree().current_scene.add_child(projectile)
+		projectile.global_position = global_position + Vector2.RIGHT.rotated(rotation) * projectile_spawn_offset
+		projectile.rotation = rotation
+		projectile.direction = Vector2.RIGHT.rotated(rotation)
+	elif Global.bullet_available == "Plasma":
+		var projectile = plasma_Projectile.instantiate()
+		get_tree().current_scene.add_child(projectile)
+		projectile.global_position = global_position + Vector2.RIGHT.rotated(rotation) * projectile_spawn_offset
+		projectile.rotation = rotation
+		projectile.direction = Vector2.RIGHT.rotated(rotation)
+	else:
+		return
+	
+	Global.bullet_available = "None"
 	
 	hit_enemies.clear()
 	Global.is_attacking = true
