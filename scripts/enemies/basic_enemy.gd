@@ -28,7 +28,6 @@ var health: float = 500 : set = set_health
 
 #region Stagger
 @onready var stagger_timer = $stagger_timer
-
 var stagger: bool = false
 #endregion
 
@@ -56,6 +55,17 @@ var hit_player: bool = false
 var is_grabbed: bool = false
 #endregion
 
+#region Freezing
+var is_frozen: bool = false
+var freeze_time_left: float = 0.0
+#endregion
+
+#region Dropping Bullet
+const exploding_Drop = preload("res://scenes/player/player_projectiles/explosion_drop.tscn")
+const freezing_Drop = preload("res://scenes/player/player_projectiles/freezing_drop.tscn")
+const plasma_Drop = preload("res://scenes/player/player_projectiles/plasma_drop.tscn")
+#endregion
+
 func _ready():
 	health = max_health
 	health_bar.init_health(health)
@@ -64,11 +74,18 @@ func _ready():
 	enemy_hitbox.disabled = true
 	
 	soft_collision = SoftCollision.new()
-	soft_collision.radius = 20.0 
+	soft_collision.radius = 20.0
 	add_child(soft_collision)
 
 func _physics_process(_delta: float) -> void:
 	if is_grabbed:
+		return
+		
+	if freeze_time_left > 0:
+		freeze_time_left -= _delta
+		velocity = Vector2.ZERO
+		if freeze_time_left <= 0:
+			unfreeze()
 		return
 	
 	var target_velocity = Vector2.ZERO
@@ -91,30 +108,62 @@ func _physics_process(_delta: float) -> void:
 		
 	move_and_slide()
 
+func apply_freeze(duration: float) -> void:
+	freeze_time_left = maxf(freeze_time_left, duration)
+	
+	if not is_frozen:
+		is_frozen = true
+		stagger = false
+		stagger_timer.stop()
+		
+		if is_attacking:
+			cancel_attack()
+
+func unfreeze() -> void:
+	is_frozen = false
+	freeze_time_left = 0.0
+
+func cancel_attack() -> void:
+	is_attacking = false
+	windup_timer.stop()
+	hitbox_timer.stop()
+	
+	enemy_hitbox.set_deferred("disabled", true)
+	enemy_area.set_deferred("monitoring", false)
+	
+	on_cooldown = true
+	cooldown_timer.start()
+
+func _is_player(body: Node) -> bool:
+	return body.is_in_group("player") or "player" in body.name.to_lower()
+
 func _on_detection_range_body_entered(body: Node2D) -> void:
-	if body.name == "player_sword" or "player_gloves":
+	if _is_player(body):
 		player = body
 
 func _on_detection_range_body_exited(body: Node2D) -> void:
-	if body.name == "player_sword" or "player_gloves":
+	if _is_player(body):
 		player = null
 
 func _on_attack_range_body_entered(body: Node2D) -> void:
-	if body.name == "player_sword" or "player_gloves":
+	if _is_player(body):
 		in_attack_range = true
 
 func _on_attack_range_body_exited(body: Node2D) -> void:
-	if body.name == "player_sword" or "player_gloves":
+	if _is_player(body):
 		in_attack_range = false
 
 func attack() -> void:
 	is_attacking = true
 	on_cooldown = true
 	hit_player = false
-
+	
 	windup_timer.start()
 	await windup_timer.timeout
-
+	
+	if is_frozen:
+		return
+	
 	enemy_hitbox.disabled = false
 	enemy_area.monitoring = true
 	hitbox_timer.start()
@@ -155,14 +204,27 @@ func set_health(new_health: float) -> void:
 
 func take_damage(damage: float, knockback_force: Vector2 = Vector2.ZERO) -> void:
 	health -= damage
-	if is_grabbed:
+	if is_grabbed or is_frozen:
 		return
+	
 	stagger = true
 	knockback_velocity = knockback_force
 	stagger_timer.start()
 
 func _on_health_depleted() -> void:
-	self.queue_free()
+	if Global.weapon_used == "Gun":
+		if randf() <= 0.50:
+			drop_bullet()
+	queue_free()
+
+func drop_bullet() -> void:
+	var drops: Array = [exploding_Drop, freezing_Drop, plasma_Drop]
+	
+	var selected_drop_scene: PackedScene = drops.pick_random()
+	
+	var drop = selected_drop_scene.instantiate()
+	get_tree().current_scene.add_child(drop)
+	drop.global_position = global_position
 
 func _on_stagger_timer_timeout() -> void:
 	stagger = false

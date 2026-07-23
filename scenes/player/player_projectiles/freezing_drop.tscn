@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://dxwhstv2fy7ws"]
+
+[ext_resource type="Script" uid="uid://hjui4fngdbqj" path="res://scripts/player/player_projectiles/freezing_drop.gd" id="1_o2otm"]
+[ext_resource type="Texture2D" uid="uid://cfaxmwfajtaer" path="res://assets/prototype_long_range_enemy_projectile.png" id="2_ujc43"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6esg4"]
+radius = 24.0
+
+[node name="freezing_bullet_drop" type="Area2D" unique_id=1903974852]
+modulate = Color(0, 0.6862745, 1, 1)
+collision_layer = 256
+collision_mask = 8
+script = ExtResource("1_o2otm")
+
+[node name="sprite_2d" type="Sprite2D" parent="." unique_id=714730603]
+modulate = Color(1, 1, 1, 0.5882353)
+rotation = 1.5707964
+texture = ExtResource("2_ujc43")
+
+[node name="collision_shape_2d" type="CollisionShape2D" parent="." unique_id=623978498]
+shape = SubResource("CircleShape2D_6esg4")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

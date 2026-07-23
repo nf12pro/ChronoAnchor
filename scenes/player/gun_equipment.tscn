@@ -12,12 +12,6 @@ script = ExtResource("1_te8l4")
 collision_layer = 2
 collision_mask = 16
 
-[node name="heavy_gun_hitbox" type="CollisionShape2D" parent="gun_area" unique_id=972961817]
-position = Vector2(232, 0)
-scale = Vector2(5.779999, 0.4499743)
-shape = SubResource("RectangleShape2D_6esg4")
-disabled = true
-
 [node name="basic_gun_hitbox" type="CollisionShape2D" parent="gun_area" unique_id=238460263]
 position = Vector2(232, 0)
 scale = Vector2(5.779999, 0.4499743)
@@ -25,8 +19,7 @@ shape = SubResource("RectangleShape2D_6esg4")
 disabled = true
 
 [node name="light_gun_hitbox" type="CollisionShape2D" parent="gun_area" unique_id=1705695705]
-position = Vector2(232, 0)
-scale = Vector2(5.779999, 0.4499743)
+position = Vector2(41, 0)
 shape = SubResource("RectangleShape2D_6esg4")
 disabled = true
 
@@ -37,7 +30,7 @@ one_shot = true
 
 [node name="cooldown_timer" type="Timer" parent="." unique_id=1566083565]
 process_callback = 0
-wait_time = 0.2
+wait_time = 0.4
 one_shot = true
 
 [node name="windup_timer" type="Timer" parent="." unique_id=349641787]

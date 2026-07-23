@@ -100,6 +100,8 @@ var parry_buffer: float = 0.0
 #endregion
 
 func _ready():
+	Global.weapon_used = "Gloves"
+	
 	health = max_health
 	health_bar.init_health(health)
 	health_bar.health_depleted.connect(_on_health_depleted)
