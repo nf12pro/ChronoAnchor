@@ -1,28 +1,28 @@
-[gd_scene format=3 uid="uid://cr1buvhsyqtdk"]
+[gd_scene format=3 uid="uid://d0rw1wnomgi5y"]
 
-[ext_resource type="Script" uid="uid://0s2khssn8cdd" path="res://scripts/player/player_projectiles/explosion_bullet_projectile.gd" id="1_uu5re"]
-[ext_resource type="Texture2D" uid="uid://cfaxmwfajtaer" path="res://assets/prototype_long_range_enemy_projectile.png" id="2_ofkdd"]
+[ext_resource type="Script" uid="uid://bnsmcvmyukc23" path="res://scripts/player/player_projectiles/freeze_bullet_projectile.gd" id="1_c2xpo"]
+[ext_resource type="Texture2D" uid="uid://cfaxmwfajtaer" path="res://assets/prototype_long_range_enemy_projectile.png" id="2_1q2uy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vsm1e"]
 size = Vector2(30, 25)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6esg4"]
-radius = 71.063354
+radius = 27.018513
 
-[node name="explosion_bullet_projectile" type="Area2D" unique_id=2126754162]
+[node name="freeze_bullet_projectile" type="Area2D" unique_id=2126754162]
 modulate = Color(1, 0, 0, 1)
 collision_layer = 32
 collision_mask = 144
-script = ExtResource("1_uu5re")
+script = ExtResource("1_c2xpo")
 
 [node name="sprite_2d" type="Sprite2D" parent="." unique_id=1081615551]
-texture = ExtResource("2_ofkdd")
+texture = ExtResource("2_1q2uy")
 
 [node name="projectile_hitbox" type="CollisionShape2D" parent="." unique_id=270875432]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_vsm1e")
 
-[node name="explosion_hitbox" type="CollisionShape2D" parent="." unique_id=516021883]
+[node name="area_hitbox" type="CollisionShape2D" parent="." unique_id=516021883]
 shape = SubResource("CircleShape2D_6esg4")
 disabled = true
 

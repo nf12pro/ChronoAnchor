@@ -56,30 +56,45 @@ var is_winding_up: bool = false
 var is_grabbed: bool = false
 #endregion
 
+#region Freezing
+var is_frozen: bool = false
+var freeze_time_left: float = 0.0
+#endregion
+
 func _ready():
 	health = max_health
 	health_bar.init_health(health)
 	health_bar.health_depleted.connect(_on_health_depleted)
-
+	
 	soft_collision = SoftCollision.new()
 	soft_collision.radius = 20.0
 	add_child(soft_collision)
-
+	
 	call_deferred("_check_initial_overlaps")
 
 func _check_initial_overlaps() -> void:
 	await get_tree().physics_frame
 	for body in detection_range.get_overlapping_bodies():
-		if body.name == "player_sword" or "player_gloves":
+		if _is_player(body):
 			player = body
 	for body in attack_range.get_overlapping_bodies():
-		if body.name == "player_sword" or "player_gloves":
+		if _is_player(body):
 			in_attack_range = true
 	for body in too_close_range.get_overlapping_bodies():
-		if body.name == "player_sword" or "player_gloves":
+		if _is_player(body):
 			too_close = true
 
 func _physics_process(_delta: float) -> void:
+	if is_grabbed:
+		return
+	
+	if freeze_time_left > 0:
+		freeze_time_left -= _delta
+		velocity = Vector2.ZERO
+		if freeze_time_left <= 0:
+			unfreeze()
+		return
+	
 	if player and not is_winding_up:
 		look_at(player.global_position)
 	
@@ -104,28 +119,55 @@ func _physics_process(_delta: float) -> void:
 	
 	move_and_slide()
 
+func apply_freeze(duration: float) -> void:
+	freeze_time_left = maxf(freeze_time_left, duration)
+	
+	if not is_frozen:
+		is_frozen = true
+		stagger = false
+		stagger_timer.stop()
+		
+		if is_attacking or is_winding_up:
+			cancel_attack()
+
+func unfreeze() -> void:
+	is_frozen = false
+	freeze_time_left = 0.0
+
+func cancel_attack() -> void:
+	is_attacking = false
+	is_winding_up = false
+	windup_timer.stop()
+	hitbox_timer.stop()
+	
+	on_cooldown = true
+	cooldown_timer.start()
+
+func _is_player(body: Node) -> bool:
+	return body.is_in_group("player") or "player" in body.name.to_lower()
+
 func _on_detection_range_body_entered(body: Node2D) -> void:
-	if body.name == "player_sword" or "player_gloves":
+	if _is_player(body):
 		player = body
 
 func _on_detection_range_body_exited(body: Node2D) -> void:
-	if body.name == "player_sword" or "player_gloves":
+	if _is_player(body):
 		player = null
 
 func _on_attack_range_body_entered(body: Node2D) -> void:
-	if body.name == "player_sword" or "player_gloves":
+	if _is_player(body):
 		in_attack_range = true
 
 func _on_attack_range_body_exited(body: Node2D) -> void:
-	if body.name == "player_sword" or "player_gloves":
+	if _is_player(body):
 		in_attack_range = false
 	
 func _on_too_close_range_body_entered(body: Node2D) -> void:
-	if body.name == "player_sword" or "player_gloves":
+	if _is_player(body):
 		too_close = true
 	
 func _on_too_close_range_body_exited(body: Node2D) -> void:
-	if body.name == "player_sword" or "player_gloves":
+	if _is_player(body):
 		too_close = false
 
 func attack() -> void:
@@ -137,6 +179,9 @@ func attack() -> void:
 	windup_timer.start()
 	await windup_timer.timeout
 	
+	if is_frozen:
+		return
+		
 	is_winding_up = false
 	
 	if not stagger:
@@ -167,6 +212,8 @@ func set_health(new_health: float) -> void:
 
 func take_damage(damage: float, knockback_force: Vector2 = Vector2.ZERO) -> void:
 	health -= damage
+	if is_grabbed or is_frozen:
+		return
 	stagger = true
 	knockback_velocity = knockback_force
 	stagger_timer.start()

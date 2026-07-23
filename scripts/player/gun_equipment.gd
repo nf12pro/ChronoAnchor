@@ -37,7 +37,7 @@ var heavy_attack_buffer: float = 0.0
 #endregion
 
 #region Heavy Attack
-const Projectile = preload("res://scenes/player/player_projectiles/explosion_bullet_projectile.tscn")
+const Projectile = preload("res://scenes/player/player_projectiles/freeze_bullet_projectile.tscn")
 
 @export var projectile_speed: float = 500.0
 @export var projectile_spawn_offset: float = 30.0
