@@ -68,28 +68,20 @@ z_index = 2
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = -481.0
-offset_top = -301.0
-offset_right = -81.0
-offset_bottom = -271.0
+offset_top = -30.0
+offset_bottom = 0.0
 grow_vertical = 0
 
-[node name="save_state_sprite" type="Sprite2D" parent="canvas_layer" unique_id=102639851]
-position = Vector2(125, 252)
-texture = ExtResource("4_c41ep")
-
 [node name="dash_tracker" type="RichTextLabel" parent="canvas_layer" unique_id=517359511]
-anchors_preset = -1
-anchor_left = 0.42000002
-anchor_top = 0.94100004
-anchor_right = 0.51000005
-anchor_bottom = 0.998
-offset_left = -528.2
-offset_top = -301.14
-offset_right = -448.2
-offset_bottom = -269.14
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -32.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 theme_override_colors/default_color = Color(0.75986844, 0.5605189, 0.16995767, 1)
 theme_override_font_sizes/normal_font_size = 14
 theme_override_font_sizes/bold_font_size = 20
@@ -99,9 +91,11 @@ scroll_active = false
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="dash_shard" type="Sprite2D" parent="canvas_layer" unique_id=290740632]
-position = Vector2(10, 253)
-scale = Vector2(2, 2)
+[node name="dash_shard_sprite" type="TextureRect" parent="canvas_layer" unique_id=185287741]
+offset_left = 473.0
+offset_top = 499.0
+offset_right = 513.0
+offset_bottom = 539.0
 texture = ExtResource("3_u4p55")
 
 [node name="save_state_tracker" type="RichTextLabel" parent="canvas_layer" unique_id=890747824]
@@ -110,10 +104,10 @@ anchor_left = 0.42000002
 anchor_top = 0.94100004
 anchor_right = 0.51000005
 anchor_bottom = 0.998
-offset_left = -419.2
-offset_top = -301.14
-offset_right = -339.2
-offset_bottom = -269.14
+offset_left = 69.79999
+offset_top = -29.140015
+offset_right = 149.79999
+offset_bottom = 2.8599854
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/default_color = Color(0.75986844, 0.5605189, 0.16995767, 1)
@@ -124,6 +118,20 @@ text = "[b] 1/1"
 scroll_active = false
 horizontal_alignment = 1
 vertical_alignment = 2
+
+[node name="save_state_sprite" type="TextureRect" parent="canvas_layer" unique_id=333749289]
+offset_left = 592.0
+offset_top = 499.0
+offset_right = 632.0
+offset_bottom = 539.0
+texture = ExtResource("4_c41ep")
+
+[node name="save_state_effect" type="ColorRect" parent="canvas_layer" unique_id=1074800677]
+visible = false
+offset_top = -7.0
+offset_right = 961.0
+offset_bottom = 539.0
+color = Color(0.52156866, 0.52156866, 0, 0.5882353)
 
 [node name="health_timer" type="Timer" parent="." unique_id=899907336]
 process_callback = 0
@@ -160,14 +168,6 @@ one_shot = true
 [node name="camera_2d" type="Camera2D" parent="." unique_id=843484154]
 process_callback = 0
 script = ExtResource("7_cdu4s")
-
-[node name="save_state_effect" type="ColorRect" parent="." unique_id=1074800677]
-visible = false
-offset_left = -481.0
-offset_top = -275.0
-offset_right = 480.0
-offset_bottom = 271.0
-color = Color(0.52156866, 0.52156866, 0, 0.5882353)
 
 [connection signal="area_entered" from="parry_area" to="." method="_on_parry_area_area_entered"]
 [connection signal="timeout" from="health_timer" to="." method="_on_health_timer_timeout"]

@@ -64,7 +64,7 @@ signal dash_finished
 @onready var save_state_tracker = $canvas_layer/save_state_tracker
 @onready var save_state_rewind_timer = $save_state_rewind_timer
 
-@onready var save_state_effect = $save_state_effect
+@onready var save_state_effect = $canvas_layer/save_state_effect
 @onready var save_state_active_timer = $save_state_active_timer
 
 const save_state_sprite = preload("res://scenes/player/save_state_sprite_loading.tscn")
