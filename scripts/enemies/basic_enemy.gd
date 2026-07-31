@@ -187,6 +187,9 @@ func _on_enemy_area_body_entered(body: Node) -> void:
 	var knockback_force = knockback_dir * knockback_strength
 	
 	body.take_damage(dealing_damage, knockback_force)
+	
+	var screenshake_damage = dealing_damage / 100.0
+	Global.apply_screenshake(screenshake_damage)
 
 func _on_hitbox_timer_timeout() -> void:
 	enemy_hitbox.disabled = true

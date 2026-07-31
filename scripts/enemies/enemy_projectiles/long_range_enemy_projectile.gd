@@ -12,12 +12,15 @@ var is_parried: bool = false
 #endregion
 
 func _physics_process(delta: float) -> void:
-	global_position += direction * speed * delta
+	global_position+= direction * speed * delta
 
 func _on_body_entered(body: Node) -> void:
 	if body.has_method("take_damage"):
 		var force = direction.normalized() * knockback_strength
 		body.take_damage(damage, force)
+		
+		var screenshake_damage = damage / 100.0
+		Global.apply_screenshake(screenshake_damage)
 	
 	queue_free()
 
