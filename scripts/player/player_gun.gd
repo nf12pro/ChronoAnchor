@@ -26,7 +26,7 @@ var damage_invincible: bool = false
 #endregion
 
 #region Health
-@onready var health_bar = $health_bar
+@onready var health_bar = $canvas_layer/health_bar
 @onready var health_timer = $health_timer
 @export var max_health: float = 100
 var health: float = 100 : set = set_health
@@ -45,7 +45,7 @@ var down_time: float = 0.0
 
 #region Dashing
 @onready var dash_timer = $dash_timer
-@onready var dash_tracker = $dash_tracker
+@onready var dash_tracker = $canvas_layer/dash_tracker
 
 var dash_charges: int = 3
 var dash_time_left: float = 0.0
@@ -61,10 +61,10 @@ signal dash_finished
 #endregion
 
 #region Save State
-@onready var save_state_tracker = $save_state_tracker
+@onready var save_state_tracker = $canvas_layer/save_state_tracker
 @onready var save_state_rewind_timer = $save_state_rewind_timer
 
-@onready var save_state_effect = $save_state_effect
+@onready var save_state_effect = $canvas_layer/save_state_effect
 @onready var save_state_active_timer = $save_state_active_timer
 
 const save_state_sprite = preload("res://scenes/player/save_state_sprite_loading.tscn")

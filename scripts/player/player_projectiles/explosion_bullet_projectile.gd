@@ -27,10 +27,10 @@ var timer_duration: float = 0.15
 #endregion
 
 #region Screen Shake
-var explosion_force_screenshake: float = 0.80
+var explosion_force_screenshake: float = 0.60
 var explosion_duration_screenshake: float = 0.75
 
-var projectile_force_screenshake: float = 0.60
+var projectile_force_screenshake: float = 0.50
 var projectile_duration_screenshake: float = 0.55
 #endregion
 

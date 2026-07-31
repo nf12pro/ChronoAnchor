@@ -39,6 +39,7 @@ func _damage_body(body: Node) -> void:
 		return
 	
 	if body.has_method("take_damage"):
+		Global.apply_screenshake(0.35, 0.50)
 		hit_enemies.append(body)
 		var force = direction.normalized() * knockback_strength
 		body.take_damage(damage, force)

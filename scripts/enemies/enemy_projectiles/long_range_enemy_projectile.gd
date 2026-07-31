@@ -11,6 +11,10 @@ var direction: Vector2 = Vector2.RIGHT
 var is_parried: bool = false
 #endregion
 
+#region Screen Shake
+var screenshake_damage: float = 0.30
+#endregion
+
 func _physics_process(delta: float) -> void:
 	global_position+= direction * speed * delta
 
@@ -19,7 +23,6 @@ func _on_body_entered(body: Node) -> void:
 		var force = direction.normalized() * knockback_strength
 		body.take_damage(damage, force)
 		
-		var screenshake_damage = damage / 100.0
 		Global.apply_screenshake(screenshake_damage)
 	
 	queue_free()

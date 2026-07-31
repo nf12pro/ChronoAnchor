@@ -237,10 +237,12 @@ func _on_gloves_area_body_entered(body: Node) -> void:
 	if light_gloves_attack: 
 		damage = light_attack_damage
 		knockback_force = light_knockback
+		Global.apply_screenshake(0.25, 0.05)
 		Global.freeze(0.035, 0.01)
 	elif heavy_gloves_attack:
 		damage = heavy_attack_damage
 		knockback_force = heavy_knockback
+		Global.apply_screenshake(0.80, 0.20)
 		Global.freeze(0.10, 0.01)
 		if not Global.is_grabbing and not grabbing_on_cooldown and body is CharacterBody2D:
 			grab_enemy(body)
@@ -250,12 +252,15 @@ func _on_gloves_area_body_entered(body: Node) -> void:
 		if active_combo_step == 1:
 			knockback_force = basic_knockback * 1.25
 			damage = int(basic_attack_damage * 1.25)
+			Global.apply_screenshake(0.25, 0.05)
 			Global.freeze(0.02, 0.035)
 		elif active_combo_step == 2:
 			knockback_force = basic_knockback * 1.50
 			damage = int(basic_attack_damage * 1.50)
+			Global.apply_screenshake(0.35, 0.10)
 			Global.freeze(0.05, 0.05)
 		else:
+			Global.apply_screenshake(0.30, 0.075)
 			Global.freeze(0.035, 0.02)
 			
 	var direction = global_position.direction_to(body.global_position)
@@ -298,8 +303,8 @@ func throw_held_enemy() -> void:
 			direction = Vector2.RIGHT.rotated(global_rotation)
 		var force = direction * throw_knockback
 		body.take_damage(throw_damage, force)
+		Global.apply_screenshake(0.30)
 		Global.freeze(0.075, 0.5)
-		Global.apply_screenshake(0.3, 0.5)
 
 func _on_hitbox_timer_timeout() -> void:
 	gloves_area.monitoring = false
