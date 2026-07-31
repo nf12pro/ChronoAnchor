@@ -200,17 +200,19 @@ func _on_sword_area_body_entered(body: Node) -> void:
 		return
 	if not body.has_method("take_damage"):
 		return
- 
+	
 	hit_enemies.append(body)
 	var damage := basic_attack_damage
 	var knockback_force := basic_knockback
 	if light_sword_attack: 
 		damage = light_attack_damage
 		knockback_force = light_knockback
+		Global.apply_screenshake(0.10, 0.40)
 		Global.freeze(0.035, 0.03)
 	elif heavy_sword_attack:
 		damage = heavy_attack_damage
 		knockback_force = heavy_knockback
+		Global.apply_screenshake(0.45, 0.60)
 		Global.freeze(0.10, 0.01)
 	else:
 		damage = basic_attack_damage
@@ -218,8 +220,10 @@ func _on_sword_area_body_entered(body: Node) -> void:
 		if active_combo_step == 1:
 			knockback_force = basic_knockback * 1.25 
 			damage = int(basic_attack_damage * 1.25)
+			Global.apply_screenshake(0.15, 0.55)
 			Global.freeze(0.07, 0.02)
 		else:
+			Global.apply_screenshake(0.10, 0.50)
 			Global.freeze(0.05, 0.015)
 	var direction = global_position.direction_to(body.global_position)
 	var force = direction * knockback_force

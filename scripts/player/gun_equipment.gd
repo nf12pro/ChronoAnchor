@@ -193,10 +193,12 @@ func _on_gun_area_body_entered(body: Node) -> void:
 	if light_gun_attack: 
 		damage = light_attack_damage
 		knockback_force = light_knockback
+		Global.apply_screenshake(0.10, 0.50)
 		Global.freeze(0.035, 0.03)
 	else:
 		damage = basic_attack_damage
 		knockback_force = basic_knockback
+		Global.apply_screenshake(0.15, 0.75)
 		Global.freeze(0.05, 0.015)
 		
 	var direction = global_position.direction_to(body.global_position)

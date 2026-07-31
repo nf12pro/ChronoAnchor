@@ -42,15 +42,17 @@ collision_layer = 8
 collision_mask = 196
 script = ExtResource("1_hr41p")
 
-[node name="health_bar" parent="." unique_id=2078701455 instance=ExtResource("2_6j5ad")]
+[node name="canvas_layer" type="CanvasLayer" parent="." unique_id=1456674326]
+
+[node name="health_bar" parent="canvas_layer" unique_id=2078701455 instance=ExtResource("2_6j5ad")]
 z_index = 2
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = -481.0
-offset_top = 239.0
+offset_top = -301.0
 offset_right = -81.0
-offset_bottom = 269.0
+offset_bottom = -271.0
 grow_vertical = 0
 
 [node name="dash_shard" type="Sprite2D" parent="." unique_id=290740632]

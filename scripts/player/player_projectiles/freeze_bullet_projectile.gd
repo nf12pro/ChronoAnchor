@@ -23,6 +23,11 @@ var projectile_hitbox_active = true
 var hit_enemies: Array = []
 #endregion
 
+#region Screen Shake
+var screenshake_force: float = 0.35
+var screenshake_explosion: float = 0.25
+#endregion
+
 func _ready() -> void:
 	projectile_hitbox.disabled = false
 	area_hitbox.disabled = true
@@ -47,6 +52,8 @@ func _on_body_entered(body: Node) -> void:
 		touched_enemy = true
 		var force = direction.normalized() * knockback_strength
 		
+		Global.apply_screenshake(screenshake_force)
+		
 		if projectile_hitbox_active:
 			body.take_damage(damage, force)
 		else:
@@ -64,6 +71,8 @@ func explode() -> void:
 	
 	projectile_hitbox.set_deferred("disabled", true)
 	area_hitbox.set_deferred("disabled", false)
+	
+	Global.apply_screenshake(screenshake_explosion)
 	
 	await get_tree().create_timer(0.15).timeout
 	queue_free()

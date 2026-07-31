@@ -26,7 +26,7 @@ var damage_invincible: bool = false
 #endregion
 
 #region Health
-@onready var health_bar = $health_bar
+@onready var health_bar = $canvas_layer/health_bar
 @onready var health_timer = $health_timer
 @export var max_health: float = 100
 var health: float = 100 : set = set_health

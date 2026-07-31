@@ -66,6 +66,10 @@ const freezing_Drop = preload("res://scenes/player/player_projectiles/freezing_d
 const plasma_Drop = preload("res://scenes/player/player_projectiles/plasma_drop.tscn")
 #endregion
 
+#region Screen Shake
+var screenshake_damage: float = 0.35
+#endregion
+
 func _ready():
 	health = max_health
 	health_bar.init_health(health)
@@ -188,7 +192,6 @@ func _on_enemy_area_body_entered(body: Node) -> void:
 	
 	body.take_damage(dealing_damage, knockback_force)
 	
-	var screenshake_damage = dealing_damage / 100.0
 	Global.apply_screenshake(screenshake_damage)
 
 func _on_hitbox_timer_timeout() -> void:
