@@ -45,7 +45,7 @@ var down_time: float = 0.0
 
 #region Dashing
 @onready var dash_timer = $dash_timer
-@onready var dash_tracker = $dash_tracker
+@onready var dash_tracker = $canvas_layer/dash_tracker
 
 var dash_charges: int = 3
 var dash_time_left: float = 0.0
@@ -61,7 +61,7 @@ signal dash_finished
 #endregion
 
 #region Save State
-@onready var save_state_tracker = $save_state_tracker
+@onready var save_state_tracker = $canvas_layer/save_state_tracker
 @onready var save_state_rewind_timer = $save_state_rewind_timer
 
 @onready var save_state_effect = $save_state_effect
