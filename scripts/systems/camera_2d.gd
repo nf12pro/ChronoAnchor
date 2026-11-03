@@ -18,7 +18,7 @@ func _add_trauma(amount: float, duration: float) -> void:
 		current_decay = 10.0
 
 func _process(delta: float) -> void:
-	if trauma > 0:
+	if trauma > 0 and Global.camera_shake_on:
 		trauma = max(trauma - current_decay * delta, 0.0)
 		_apply_shake()
 	elif offset != Vector2.ZERO:
