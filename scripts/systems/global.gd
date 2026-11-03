@@ -14,6 +14,10 @@ var weapon_used: String = "" # Sword, Gloves, Gun
 var bullet_available: String = "None" # Explosion, Freezing, Plasma
 #endregion
 
+#region Player Settings
+var camera_shake_on: bool = false
+#endregion
+
 #region Camera
 signal screenshake_requested(strength: float, duration: float)
 
